@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>차트만 보고 롱·숏 치는 - 코인선물 적성검사 · 너 선물 해도 되는 사람이야?</title>
+<meta name="description" content="코인명을 숨긴 실제 코인 차트로 5분봉 롱·숏 선물 매매를 해보고 적성 등급을 받아보세요. 최대 50배 레버리지, 강제청산 주의. 마지막에 코인이 공개됩니다.">
+<meta property="og:title" content="🚀 차트만 보고 롱·숏 치는 - 코인선물 적성검사">
+<meta property="og:description" content="실제 차트, 가상 자금, 최대 50배 레버리지. 당신의 선물 적성은 몇 등급? 청산 조심 💀">
+<meta property="og:type" content="website">
+<!-- GA: 단타 적성검사와 같은 계정. 새 속성을 만들면 측정 ID만 교체 -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-LV3JB307JX"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag("js", new Date());
+  gtag("config", "G-LV3JB307JX");
+</script>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1057421991223781" crossorigin="anonymous"></script>
+<link rel="preconnect" href="https://cdn.jsdelivr.net">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+<link rel="stylesheet" href="style.css?v=1">
+</head>
+<body>
+<div class="wrap">
+
+  <!-- 인트로 -->
+  <section id="scr-intro" class="screen">
+    <header>
+      <h1><span class="h1-sub">차트만 보고 롱·숏 치는</span><span class="h1-main">🚀 코인선물 적성검사</span></h1>
+      <p class="tagline">실제 차트, 가상자금 1,000만원, 최대 50배 레버리지. 살아남을 수 있을까?</p>
+    </header>
+    <div id="challenge-banner" class="challenge-banner hidden"></div>
+    <div class="rules panel">
+      <div class="rule">🎲 <b>정체불명의 코인</b>이 랜덤으로 선택됩니다 (등급만 공개 · 가격은 100 기준 지수화)</div>
+      <div class="rule">📜 먼저 <b>직전 20시간(5분봉 240개)</b>이 그려집니다. 흐름을 파악하세요</div>
+      <div class="rule">📈 <b>▶ 시작</b>을 누르면 이어서 20시간(240봉)이 흘러가요 — <b>롱/숏</b> 전환 자유!</div>
+      <div class="rule">⚡ 레버리지 <b>1~50배</b> · 진입은 전액 증거금 · 진입/종료마다 <b>수수료 0.05%</b></div>
+      <div class="rule">💀 증거금이 소진되면 <b>강제청산 = 즉시 게임 오버</b>. 50배는 단 <b>-1.5%</b>면 끝장</div>
+      <div class="rule">🏁 종료 후 <b>코인 공개</b> + 현물 존버와 성적 비교</div>
+    </div>
+    <button class="go-btn" id="btn-start">🚀 검사 시작</button>
+    <div class="panel dash hidden" id="dash"></div>
+    <div class="ad-slot"><span>AD</span></div>
+  </section>
+
+  <!-- 게임 -->
+  <section id="scr-game" class="screen hidden">
+    <div class="hud">
+      <span class="sector-chip" id="g-tier"></span>
+      <span class="day-count" id="g-day">직전 20시간</span>
+      <button id="btn-restart">🔄 다시시작</button>
+    </div>
+    <canvas id="g-chart-full" width="1080" height="150"></canvas>
+    <canvas id="g-chart" width="1080" height="340"></canvas>
+    <div class="ma-legend"><span class="ma20">― 20봉선</span><span class="ma60">― 60봉선</span><span class="ma120">― 120봉선</span></div>
+    <div class="play-ui hidden" id="play-ui">
+      <p class="start-hint" id="start-hint">📜 직전 20시간 차트입니다. <b>▶ 선물 매매 시작</b>을 누르면 이어서 그려져요 — 미리 진입해둬도 됩니다.</p>
+      <div class="playback">
+        <span class="speed" id="g-speed">
+          <button data-sp="0.5">0.5x</button><button data-sp="1" class="on">1x</button><button data-sp="2">2x</button>
+        </span>
+        <button id="btn-pause" class="start" disabled>▶ 선물 매매 시작</button>
+        <button id="btn-step" disabled>⏭ +1봉</button>
+      </div>
+      <div class="stat-row two">
+        <div class="stat"><span>총자산</span><b id="g-equity">1,000만원</b></div>
+        <div class="stat"><span>수익률</span><b id="g-ret">0.0%</b></div>
+      </div>
+      <div class="lev-row" id="lev-row">
+        <span class="lev-label">레버리지</span>
+        <button data-lev="1">1x</button><button data-lev="2">2x</button><button data-lev="5" class="on">5x</button><button data-lev="10" class="danger">10x</button><button data-lev="20" class="danger">20x</button><button data-lev="50" class="danger">50x</button>
+      </div>
+      <div class="pos-panel" id="g-pos">현재 포지션 없음 — 방향을 정해 진입하세요</div>
+      <div class="trade-rows">
+        <div class="trade-row main">
+          <button class="btn-long" id="btn-long">🔺 롱 진입<span class="sub-label">오를 것 같다</span></button>
+          <button class="btn-short" id="btn-short">🔻 숏 진입<span class="sub-label">내릴 것 같다</span></button>
+        </div>
+        <button class="btn-close" id="btn-close" disabled>✅ 포지션 종료 (익절/손절)</button>
+      </div>
+      <p class="toast" id="g-toast"></p>
+      <div class="big-ret hidden" id="g-bigret"><span>증거금 대비 손익 (ROE)</span><b>+0.0%</b></div>
+    </div>
+  </section>
+
+  <!-- 결과 -->
+  <section id="scr-result" class="screen hidden">
+    <p class="reveal-pre">당신이 롱·숏 치던 코인은...</p>
+    <p class="reveal-name" id="r-name"></p>
+    <p class="reveal-period" id="r-period"></p>
+
+    <div class="grade-box">
+      <span class="grade" id="r-grade">A</span>
+      <span class="grade-label">선물 적성</span>
+    </div>
+    <p class="r-comment" id="r-comment"></p>
+
+    <div class="vs-rows" id="r-vs"></div>
+    <canvas id="r-chart" width="640" height="280"></canvas>
+    <div class="r-stats" id="r-stats"></div>
+    <div id="r-challenge" class="challenge-result hidden"></div>
+
+    <div class="r-actions">
+      <button id="btn-card">📸 카드 저장</button>
+      <button id="btn-again">🔄 한 판 더</button>
+    </div>
+    <button class="challenge-cta" id="btn-challenge">⚔️ 친구에게 도전장 보내기</button>
+    <p class="challenge-desc">내가 방금 플레이한 <b>똑같은 코인·똑같은 구간</b>으로 친구가 대결하는 링크를 보냅니다.<br>친구의 결과 화면에 승패가 자동으로 표시돼요. (친구에게도 코인은 비밀)</p>
+    <p class="challenge-msg hidden" id="challenge-msg"></p>
+    <div class="challenge-copy hidden" id="challenge-copy">
+      <input id="challenge-url" readonly>
+      <button id="btn-copyurl">복사</button>
+    </div>
+    <div class="r-caveat">
+      <p class="r-caveat-title">⚠️ 실제 선물 시장은 이 게임보다 훨씬 가혹합니다</p>
+      <p>이 게임엔 <b>펀딩비(보유 수수료)·슬리피지·호가 스프레드가 없고</b>, 청산 시 발생하는
+      <b>청산 수수료와 보험기금 차감</b>도 단순화되어 있습니다. 실제 고배율 선물에선 순간적인
+      꼬리(휩쏘) 한 번에 증거금 전체가 사라지며, 통계적으로 <b>선물 트레이더 대다수가 손실</b>로 끝납니다.</p>
+      <p>따라서 이 게임의 수익률은 <b>실제 투자 수익을 전혀 보장하지 않습니다.</b></p>
+    </div>
+    <div class="ad-slot"><span>AD</span></div>
+    <canvas id="card-canvas" width="1080" height="1480" style="display:none"></canvas>
+  </section>
+
+  <footer>
+    <p>실제 과거 시세(바이낸스 5분봉, 시작가 100 지수화) 기반 모의투자 게임 · 펀딩비/슬리피지 미반영 · <span id="f-updated"></span></p>
+    <p>본 게임은 재미를 위한 것으로 투자 권유가 아니며, 게임 성적은 실제 투자 실력을 보장하지 않습니다.</p>
+    <p class="footer-links"><a href="/privacy.html">개인정보처리방침</a><a href="/about.html">서비스 소개</a></p>
+  </footer>
+</div>
+
+<!-- 결과 카드 미리보기 팝업 -->
+<div class="card-modal hidden" id="card-modal">
+  <div class="card-modal-inner">
+    <p class="card-modal-title">📸 결과 카드</p>
+    <img id="card-preview" alt="차트만 보고 롱·숏 치는 - 코인선물 적성검사 결과 카드">
+    <div class="card-modal-actions">
+      <button id="btn-card-save">💾 이미지 저장</button>
+      <button id="btn-card-copy">📋 복사</button>
+    </div>
+    <p class="card-modal-msg" id="card-modal-msg"></p>
+    <button class="card-modal-close" id="btn-card-close">닫기 ✕</button>
+  </div>
+</div>
+
+<!-- 확인 팝업 (다시시작 등) -->
+<div class="confirm-modal hidden" id="confirm-modal">
+  <div class="confirm-inner">
+    <p class="confirm-msg" id="confirm-msg"></p>
+    <div class="confirm-actions">
+      <button id="confirm-cancel">취소</button>
+      <button id="confirm-ok">다시 시작</button>
+    </div>
+  </div>
+</div>
+
+<script src="app.js?v=4"></script>
+</body>
+</html>

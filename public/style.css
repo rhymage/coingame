@@ -257,6 +257,16 @@ h1 { font-size: 30px; letter-spacing: -0.5px; line-height: 1.18; }
 .r-caveat p + p { margin-top: 6px; }
 .r-caveat b { color: #ffcaa3; font-weight: 700; }
 
+.revenge-btn {
+  width: 100%; margin-top: 16px; padding: 15px; border: none; border-radius: 14px;
+  background: linear-gradient(135deg, #ff7847, #ff4d6b); color: #fff;
+  font-size: 17px; font-weight: 900; cursor: pointer; font-family: inherit;
+}
+.revenge-btn span {
+  display: block; margin-top: 3px; font-size: 11.5px; font-weight: 600; opacity: .85;
+}
+.revenge-btn:active { transform: scale(.97); }
+
 .r-actions { margin-top: 16px; display: flex; gap: 8px; }
 .r-actions button {
   flex: 1; padding: 13px 4px; border: none; border-radius: 12px; cursor: pointer;

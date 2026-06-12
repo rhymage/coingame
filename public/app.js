@@ -70,6 +70,55 @@ function show(id) {
   window.scrollTo(0, 0);
 }
 
+// ── 광고 (Ad Placement API: 전면 + 리워드) ──
+const ADS = { gamesFinished: 0, lastInterstitial: 0, rewardShowFn: null, rewardViewed: false };
+let REVENGE = null; // {idx, start} — 리워드 광고 시청 후 같은 차트 재도전
+
+// adsbygoogle.js가 실제로 로드됐는지 (애드블록/오프라인이면 push가 순정 배열 그대로)
+const adsLibReady = () => window.adsbygoogle && window.adsbygoogle.push !== Array.prototype.push;
+
+function initAds() {
+  adConfig({ preloadAdBreaks: "on", sound: "off" });
+}
+
+// "한 판 더" 전면광고: 3판째부터, 최소 90초 간격. 광고가 안 떠도 게임은 반드시 진행된다.
+function maybeInterstitial(then) {
+  const now = Date.now();
+  if (!adsLibReady() || ADS.gamesFinished < 2 || now - ADS.lastInterstitial < 90000) return then();
+  let proceeded = false, shown = false;
+  const go = () => { if (!proceeded) { proceeded = true; then(); } };
+  adBreak({
+    type: "next", name: "play_again",
+    beforeAd: () => { shown = true; ADS.lastInterstitial = Date.now(); gaEvent("ad_interstitial", { placement: "play_again" }); },
+    adBreakDone: go,
+  });
+  // H5 게임 광고 미승인 계정 등으로 콜백이 영영 안 오는 경우 대비
+  setTimeout(() => { if (!shown) go(); }, 3000);
+}
+
+// 복수전 리워드 광고: 손실/청산 결과일 때 심는다. 광고가 실제로 준비된 경우에만 버튼 노출.
+function plantRevengeAd() {
+  $("#btn-revenge").classList.add("hidden");
+  if (!adsLibReady()) return;
+  if (ADS.rewardShowFn) { $("#btn-revenge").classList.remove("hidden"); return; } // 준비된 광고 재사용
+  adBreak({
+    type: "reward", name: "revenge_match",
+    beforeReward: (showAdFn) => { ADS.rewardShowFn = showAdFn; $("#btn-revenge").classList.remove("hidden"); },
+    adViewed: () => { ADS.rewardViewed = true; gaEvent("ad_reward_viewed", { placement: "revenge" }); },
+    adDismissed: () => { ADS.rewardViewed = false; },
+    adBreakDone: () => {
+      ADS.rewardShowFn = null;
+      if (ADS.rewardViewed) { ADS.rewardViewed = false; startRevenge(); }
+    },
+  });
+}
+
+function startRevenge() {
+  REVENGE = { idx: G.chartIdx, start: G.start };
+  gaEvent("revenge_start", { chart: G.chartIdx });
+  startGame();
+}
+
 let toastTimer = null;
 function toast(msg) {
   $("#g-toast").textContent = msg;
@@ -270,8 +319,10 @@ async function init() {
   $("#btn-again").onclick = () => {
     G.challenge = null;
     history.replaceState(null, "", location.pathname);
-    startGame();
+    maybeInterstitial(startGame);
   };
+  $("#btn-revenge").onclick = () => { if (ADS.rewardShowFn) ADS.rewardShowFn(); };
+  initAds();
   $("#btn-card").onclick = saveCard;
   $("#btn-card-save").onclick = downloadCard;
   $("#btn-card-copy").onclick = copyCard;
@@ -376,7 +427,10 @@ async function startGame() {
   clearInterval(G.previewTimer); G.previewTimer = null;
 
   let idx, start;
-  if (G.challenge) {
+  if (REVENGE) {
+    ({ idx, start } = REVENGE);
+    REVENGE = null;
+  } else if (G.challenge) {
     [idx, start] = G.challenge.g.split(".").map(Number);
   } else {
     idx = Math.floor(Math.random() * MANIFEST.charts.length);
@@ -679,6 +733,7 @@ function endGame() {
     lev10Ret: lev10Liq ? null : bhRet * 10,
   };
 
+  ADS.gamesFinished++;
   gaEvent("game_complete", {
     grade,
     liquidated: G.liq,
@@ -780,6 +835,10 @@ function renderResult() {
       ? `😭 <b>패배...</b> 나 ${fmtWon(mine)} vs 상대 ${fmtWon(theirs)}`
       : `🤝 무승부! 둘 다 ${fmtWon(mine)}`;
   } else cEl.classList.add("hidden");
+
+  // 손실/청산으로 끝났으면 복수전 리워드 광고 기회 제공
+  if (G.liq || r.myRet < 0) plantRevengeAd();
+  else $("#btn-revenge").classList.add("hidden");
 
   drawResultChart();
 }

@@ -16,10 +16,24 @@
   gtag("js", new Date());
   gtag("config", "G-KTHQQLNB2T");
 </script>
-<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1057421991223781" crossorigin="anonymous"></script>
+<!-- AdSense + Ad Placement API (H5 게임 광고: 전면/리워드). ?adtest=1 로 접속하면 테스트 광고 모드 -->
+<script>
+  (function () {
+    var s = document.createElement("script");
+    s.async = true;
+    s.src = "https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1057421991223781";
+    s.crossOrigin = "anonymous";
+    s.setAttribute("data-ad-frequency-hint", "60s");
+    if (new URLSearchParams(location.search).has("adtest")) s.setAttribute("data-adbreak-test", "on");
+    document.head.appendChild(s);
+  })();
+  window.adsbygoogle = window.adsbygoogle || [];
+  function adBreak(o) { adsbygoogle.push(o); }
+  function adConfig(o) { adsbygoogle.push(o); }
+</script>
 <link rel="preconnect" href="https://cdn.jsdelivr.net">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
-<link rel="stylesheet" href="style.css?v=1">
+<link rel="stylesheet" href="style.css?v=2">
 </head>
 <body>
 <div class="wrap">
@@ -101,6 +115,7 @@
     <div class="r-stats" id="r-stats"></div>
     <div id="r-challenge" class="challenge-result hidden"></div>
 
+    <button class="revenge-btn hidden" id="btn-revenge">📺 광고 보고 같은 차트로 복수전<span>이번엔 코인을 알고 친다 — 설욕의 기회</span></button>
     <div class="r-actions">
       <button id="btn-card">📸 카드 저장</button>
       <button id="btn-again">🔄 한 판 더</button>
@@ -155,6 +170,6 @@
   </div>
 </div>
 
-<script src="app.js?v=4"></script>
+<script src="app.js?v=5"></script>
 </body>
 </html>

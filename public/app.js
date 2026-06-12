@@ -71,7 +71,7 @@ function show(id) {
 }
 
 // ── 광고 (Ad Placement API: 전면 + 리워드) ──
-const ADS = { gamesFinished: 0, lastInterstitial: 0, rewardShowFn: null, rewardViewed: false };
+const ADS = { gamesFinished: 0, lastInterstitial: 0, misses: 0, rewardShowFn: null, rewardViewed: false };
 let REVENGE = null; // {idx, start} — 리워드 광고 시청 후 같은 차트 재도전
 
 // adsbygoogle.js가 실제로 로드됐는지 (애드블록/오프라인이면 push가 순정 배열 그대로)
@@ -82,18 +82,19 @@ function initAds() {
 }
 
 // "한 판 더" 전면광고: 3판째부터, 최소 90초 간격. 광고가 안 떠도 게임은 반드시 진행된다.
+// H5 미승인 등으로 광고가 2번 연속 안 나오면 그 세션에선 더 시도하지 않는다 (폴백 대기 지연 방지).
 function maybeInterstitial(then) {
   const now = Date.now();
-  if (!adsLibReady() || ADS.gamesFinished < 2 || now - ADS.lastInterstitial < 90000) return then();
+  if (!adsLibReady() || ADS.misses >= 2 || ADS.gamesFinished < 2 || now - ADS.lastInterstitial < 90000) return then();
   let proceeded = false, shown = false;
   const go = () => { if (!proceeded) { proceeded = true; then(); } };
   adBreak({
     type: "next", name: "play_again",
-    beforeAd: () => { shown = true; ADS.lastInterstitial = Date.now(); gaEvent("ad_interstitial", { placement: "play_again" }); },
+    beforeAd: () => { shown = true; ADS.misses = 0; ADS.lastInterstitial = Date.now(); gaEvent("ad_interstitial", { placement: "play_again" }); },
     adBreakDone: go,
   });
-  // H5 게임 광고 미승인 계정 등으로 콜백이 영영 안 오는 경우 대비
-  setTimeout(() => { if (!shown) go(); }, 3000);
+  // 콜백이 영영 안 오는 경우 대비한 폴백
+  setTimeout(() => { if (!shown) { ADS.misses++; go(); } }, 1500);
 }
 
 // 복수전 리워드 광고: 손실/청산 결과일 때 심는다. 광고가 실제로 준비된 경우에만 버튼 노출.

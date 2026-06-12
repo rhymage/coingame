@@ -812,10 +812,14 @@ function renderResult() {
   const row = (label, html, me) =>
     `<div class="row${me ? " me" : ""}"><span>${label}</span><b>${html}</b></div>`;
   const retHtml = (v) => `<span class="${v >= 0 ? "plus" : "minus"}">${pct(v)}</span>`;
-  $("#r-vs").innerHTML =
-    row(`🫵 나의 선물 (최종 ${fmtWon(r.equity)})`, G.liq ? `<span class="liq-mark">💀 청산 -100%</span>` : retHtml(r.myRet), true) +
-    row(`💎 현물로 존버했다면`, retHtml(r.bhRet)) +
-    row(`🎰 10배 롱 존버였다면`, r.lev10Liq ? `<span class="liq-mark">💀 강제청산</span>` : retHtml(r.lev10Ret));
+  // 청산 판은 이후 시세를 못 본 상태 — 벤치마크 수익률도 숨겨 복수전의 공정성을 지킨다
+  $("#r-vs").innerHTML = G.liq
+    ? row(`🫵 나의 선물 (최종 ${fmtWon(r.equity)})`, `<span class="liq-mark">💀 청산 -100%</span>`, true) +
+      row(`💎 현물로 존버했다면`, `<span class="liq-mark">❓ 미공개</span>`) +
+      row(`🎰 10배 롱 존버였다면`, `<span class="liq-mark">❓ 끝까지 살아남으면 공개</span>`)
+    : row(`🫵 나의 선물 (최종 ${fmtWon(r.equity)})`, retHtml(r.myRet), true) +
+      row(`💎 현물로 존버했다면`, retHtml(r.bhRet)) +
+      row(`🎰 10배 롱 존버였다면`, r.lev10Liq ? `<span class="liq-mark">💀 강제청산</span>` : retHtml(r.lev10Ret));
 
   const winTxt = r.winRate == null ? "-" : (r.winRate * 100).toFixed(0) + "%";
   $("#r-stats").innerHTML = `
@@ -845,11 +849,12 @@ function renderResult() {
 }
 
 // 결과 곡선(코인 가격 vs 내 자산) — 화면/카드 공용.
-// 청산으로 게임이 일찍 끝나도 가격 곡선은 끝까지 그려 "그 뒤 어떻게 됐는지" 보여준다.
+// 청산으로 일찍 끝난 판은 청산 시점 이후를 미공개 처리 — 같은 차트 복수전의 공정성을 지킨다.
 function paintResultCurves(ctx, ox, oy, w, h, big = false) {
   const s = G.chart;
+  const endIdx = G.liq && G.liqInfo ? G.liqInfo.day : N - 1;
   const closes = [];
-  for (let d = 0; d < N; d++) closes.push(s.c[bar(d)]);
+  for (let d = 0; d <= endIdx; d++) closes.push(s.c[bar(d)]);
   const eq = G.equityCurve.map((v) => (v / START_ASSET) * s.o[bar(0)]);
   let lo = Math.min(Math.min(...closes), Math.min(...eq));
   let hi = Math.max(Math.max(...closes), Math.max(...eq));
@@ -858,6 +863,22 @@ function paintResultCurves(ctx, ox, oy, w, h, big = false) {
   const pad = big ? 24 : 14;
   const x = (d) => ox + pad + (d / (N - 1)) * (w - pad * 2);
   const y = (v) => oy + pad + (h - pad * 2) * (1 - (v - lo) / (hi - lo));
+
+  // 청산 이후 구간: 가림막 + 안내 (실제로 보지 못한 구간)
+  if (endIdx < N - 1) {
+    const hx = x(endIdx);
+    ctx.fillStyle = "#0a0d18";
+    ctx.fillRect(hx, oy + 2, ox + w - hx - 2, h - 4);
+    ctx.strokeStyle = "#ff784755"; ctx.setLineDash([4, 4]);
+    ctx.beginPath(); ctx.moveTo(hx, oy + pad); ctx.lineTo(hx, oy + h - pad); ctx.stroke();
+    ctx.setLineDash([]);
+    ctx.fillStyle = "#566181"; ctx.textAlign = "center";
+    ctx.font = `${big ? 30 : 15}px sans-serif`;
+    ctx.fillText("❓", (hx + ox + w) / 2, oy + h / 2 - (big ? 14 : 8));
+    ctx.font = `${big ? 22 : 11}px sans-serif`;
+    ctx.fillText("청산 이후 미공개", (hx + ox + w) / 2, oy + h / 2 + (big ? 22 : 10));
+    if (!big) ctx.fillText("복수전에서 확인", (hx + ox + w) / 2, oy + h / 2 + 24);
+  }
 
   ctx.beginPath();
   closes.forEach((v, d) => (d ? ctx.lineTo(x(d), y(v)) : ctx.moveTo(x(d), y(v))));
@@ -918,7 +939,7 @@ function renderDash() {
       <span>최고 등급 <b>${best}</b></span>
     </div>
     ${h.slice(0, 5).map((x) =>
-      `<div class="hist"><span>${x.grade === "💀" ? "💀 청산" : x.grade + "등급"} · ${x.name}</span><span>나 ${x.liq ? "-100%" : pct(x.ret)} / 존버 ${pct(x.bh)}</span></div>`
+      `<div class="hist"><span>${x.grade === "💀" ? "💀 청산" : x.grade + "등급"} · ${x.name}</span><span>나 ${x.liq ? "-100%" : pct(x.ret)} / 존버 ${x.liq ? "❓" : pct(x.bh)}</span></div>`
     ).join("")}`;
 }
 
@@ -1016,7 +1037,7 @@ async function saveCard() {
     ctx.fillText(`나의 선물 ${pct(r.myRet)}  (${fmtWon(r.equity)})`, W / 2, 592);
   }
   ctx.fillStyle = "#8b93b8"; ctx.font = "400 38px Pretendard, sans-serif";
-  ctx.fillText(`현물 존버였다면 ${pct(r.bhRet)}`, W / 2, 646);
+  ctx.fillText(liq ? "청산 이후 시세는 미공개 — 복수전에서 확인" : `현물 존버였다면 ${pct(r.bhRet)}`, W / 2, 646);
 
   // 코멘트
   ctx.fillStyle = "#ffd84d"; ctx.font = "400 32px Pretendard, sans-serif";

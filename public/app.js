@@ -97,14 +97,20 @@ function maybeInterstitial(then) {
   setTimeout(() => { if (!shown) { ADS.misses++; go(); } }, 1500);
 }
 
-// 복수전 리워드 광고: 손실/청산 결과일 때 심는다. 광고가 실제로 준비된 경우에만 버튼 노출.
+// 복수전 버튼: 손실/청산 결과일 때 항상 노출.
+// 리워드 광고가 준비되면 '광고 보고' 모드, 아니면(H5 미승인 등) 무료 복수전으로 동작.
+function setRevengeLabel() {
+  $("#btn-revenge").innerHTML = ADS.rewardShowFn
+    ? "📺 광고 보고 같은 차트로 복수전<span>이번엔 앞 흐름을 알고 친다 — 설욕의 기회</span>"
+    : "🔥 같은 차트로 복수전<span>이번엔 앞 흐름을 알고 친다 — 설욕의 기회</span>";
+}
 function plantRevengeAd() {
-  $("#btn-revenge").classList.add("hidden");
-  if (!adsLibReady()) return;
-  if (ADS.rewardShowFn) { $("#btn-revenge").classList.remove("hidden"); return; } // 준비된 광고 재사용
+  $("#btn-revenge").classList.remove("hidden");
+  setRevengeLabel();
+  if (!adsLibReady() || ADS.rewardShowFn) return;
   adBreak({
     type: "reward", name: "revenge_match",
-    beforeReward: (showAdFn) => { ADS.rewardShowFn = showAdFn; $("#btn-revenge").classList.remove("hidden"); },
+    beforeReward: (showAdFn) => { ADS.rewardShowFn = showAdFn; setRevengeLabel(); },
     adViewed: () => { ADS.rewardViewed = true; gaEvent("ad_reward_viewed", { placement: "revenge" }); },
     adDismissed: () => { ADS.rewardViewed = false; },
     adBreakDone: () => {
@@ -322,7 +328,10 @@ async function init() {
     history.replaceState(null, "", location.pathname);
     maybeInterstitial(startGame);
   };
-  $("#btn-revenge").onclick = () => { if (ADS.rewardShowFn) ADS.rewardShowFn(); };
+  $("#btn-revenge").onclick = () => {
+    if (ADS.rewardShowFn) ADS.rewardShowFn(); // 광고 시청 후 adViewed → 복수전
+    else startRevenge(); // 광고 미가용(승인 전 등): 무료 복수전
+  };
   initAds();
   $("#btn-card").onclick = saveCard;
   $("#btn-card-save").onclick = downloadCard;
@@ -872,12 +881,16 @@ function paintResultCurves(ctx, ox, oy, w, h, big = false) {
     ctx.strokeStyle = "#ff784755"; ctx.setLineDash([4, 4]);
     ctx.beginPath(); ctx.moveTo(hx, oy + pad); ctx.lineTo(hx, oy + h - pad); ctx.stroke();
     ctx.setLineDash([]);
-    ctx.fillStyle = "#566181"; ctx.textAlign = "center";
-    ctx.font = `${big ? 30 : 15}px sans-serif`;
-    ctx.fillText("❓", (hx + ox + w) / 2, oy + h / 2 - (big ? 14 : 8));
-    ctx.font = `${big ? 22 : 11}px sans-serif`;
-    ctx.fillText("청산 이후 미공개", (hx + ox + w) / 2, oy + h / 2 + (big ? 22 : 10));
-    if (!big) ctx.fillText("복수전에서 확인", (hx + ox + w) / 2, oy + h / 2 + 24);
+    // 가림 구간이 텍스트를 담기에 충분히 넓을 때만 안내 문구 표시
+    const zoneW = ox + w - hx;
+    if (zoneW > (big ? 300 : 150)) {
+      ctx.fillStyle = "#7b86ad"; ctx.textAlign = "center";
+      ctx.font = `${big ? 56 : 28}px sans-serif`;
+      ctx.fillText("❓", (hx + ox + w) / 2, oy + h / 2 - (big ? 26 : 14));
+      ctx.font = `700 ${big ? 32 : 17}px sans-serif`;
+      ctx.fillText("청산 이후 미공개", (hx + ox + w) / 2, oy + h / 2 + (big ? 30 : 14));
+      if (!big) ctx.fillText("복수전에서 확인", (hx + ox + w) / 2, oy + h / 2 + 34);
+    }
   }
 
   ctx.beginPath();

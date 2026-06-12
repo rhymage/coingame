@@ -16,17 +16,8 @@
   gtag("js", new Date());
   gtag("config", "G-KTHQQLNB2T");
 </script>
-<!-- AdSense + Ad Placement API (H5 게임 광고: 전면/리워드). ?adtest=1 로 접속하면 테스트 광고 모드 -->
+<!-- 애드센스 심사 통과 전까지 광고 로더 비활성화. 승인 후 ads-loader.snippet.html 내용으로 이 블록을 교체 (README '광고 코드 복원' 참고) -->
 <script>
-  (function () {
-    var s = document.createElement("script");
-    s.async = true;
-    s.src = "https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1057421991223781";
-    s.crossOrigin = "anonymous";
-    s.setAttribute("data-ad-frequency-hint", "60s");
-    if (new URLSearchParams(location.search).has("adtest")) s.setAttribute("data-adbreak-test", "on");
-    document.head.appendChild(s);
-  })();
   window.adsbygoogle = window.adsbygoogle || [];
   function adBreak(o) { adsbygoogle.push(o); }
   function adConfig(o) { adsbygoogle.push(o); }
@@ -55,7 +46,6 @@
     </div>
     <button class="go-btn" id="btn-start">🚀 검사 시작</button>
     <div class="panel dash hidden" id="dash"></div>
-    <div class="ad-slot"><span>AD</span></div>
   </section>
 
   <!-- 게임 -->
@@ -134,7 +124,6 @@
       꼬리(휩쏘) 한 번에 증거금 전체가 사라지며, 통계적으로 <b>선물 트레이더 대다수가 손실</b>로 끝납니다.</p>
       <p>따라서 이 게임의 수익률은 <b>실제 투자 수익을 전혀 보장하지 않습니다.</b></p>
     </div>
-    <div class="ad-slot"><span>AD</span></div>
     <canvas id="card-canvas" width="1080" height="1480" style="display:none"></canvas>
   </section>
 

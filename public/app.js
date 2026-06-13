@@ -11,6 +11,7 @@ const MMR = 0.005;  // 유지증거금률 0.5% (격리마진 청산가 계산용
 const LEVS = [1, 2, 5, 10, 20, 50];
 
 const TIER_EMOJI = { "메이저": "👑", "알트코인": "🌊", "밈코인": "🐶" };
+const TIER_EN   = { "메이저": "Major", "알트코인": "Altcoin", "밈코인": "Meme Coin" };
 
 // ── 다국어 (KO / EN) ──
 const STRINGS = {
@@ -129,7 +130,7 @@ const STRINGS = {
   },
   en: {
     h1sub:"Long or Short on Charts —", h1main:"🚀 Crypto Futures Aptitude Test",
-    tagline:"Real charts, virtual ₩10M, up to 50× leverage. Can you survive?",
+    tagline:"Real charts, virtual $10,000, up to 50× leverage. Can you survive?",
     rule1:"🎲 A <b>mystery coin</b> is randomly selected (tier shown · price indexed to 100)",
     rule2:"📜 First, the <b>past 20 hours (240 × 5-min candles)</b> are drawn. Read the flow.",
     rule3:"📈 Hit <b>▶ Start</b> and the next 20 hours unfold — switch <b>Long/Short</b> freely!",
@@ -204,7 +205,7 @@ const STRINGS = {
     cardChallengeWin:(them)=>`🏆 Challenge won! Opponent: ${them}`,
     cardChallengeWith:(them)=>`vs opponent ${them}`,
     cardStats:(t,w,m,l)=>`${t} entries    Win rate ${w}    Max DD −${m}%    Max ${l}×`,
-    gradeLiqComment:(lev,day)=>`💀 Liquidated ${lev?"at "+lev+"×":""} — your entire ₩10M margin is gone. This happens every day in real futures markets.`,
+    gradeLiqComment:(lev,day)=>`💀 Liquidated ${lev?"at "+lev+"×":""} — your entire $10,000 margin is gone. This happens every day in real futures markets.`,
     gradePosProfit:(ret,bh)=>`💰 ${ret} profit taken — always right to take profit! But spot hold alone gave ${bh}, so futures score is lower.`,
     gradeProfitC:(bh)=>`💰 Profit is right! Made gains, matching spot hold (${bh}). Not bad. 🙂`,
     gradeComment:{
@@ -276,6 +277,10 @@ function fmtWon(v) {
     return `${eok.toLocaleString("ko-KR")}억${rest ? " " + rest.toLocaleString("ko-KR") + "만원" : "원"}`;
   }
   return `${man.toLocaleString("ko-KR")}만원`;
+}
+function fmtMoney(v) {
+  if (LOCALE === "en") return "$" + Math.round(v / 1000).toLocaleString("en-US");
+  return fmtWon(v);
 }
 const fmtPx = (v) => v.toFixed(1);
 const bar = (i) => G.start + i; // window 인덱스(음수 = 사전 구간) → 전체 인덱스
@@ -475,7 +480,7 @@ function updateHud() {
   const ret = equity / START_ASSET - 1;
   const remainH = ((N - 1 - G.day) * 5) / 60;
   $("#g-day").textContent = t("hudDay")(G.day + 1, N, remainH.toFixed(1));
-  $("#g-equity").textContent = fmtWon(equity);
+  $("#g-equity").textContent = fmtMoney(equity);
   const r = $("#g-ret");
   r.textContent = pct(ret);
   r.className = ret >= 0 ? "plus" : "minus";
@@ -488,7 +493,7 @@ function updateHud() {
     posEl.className = "pos-panel " + (G.pos.side === 1 ? "long" : "short");
     posEl.innerHTML =
       `<b class="side-${G.pos.side === 1 ? "long" : "short"}">${G.pos.side === 1 ? "🔺" : "🔻"} ${sideName} ${G.pos.lev}x</b>` +
-      ` ${t("posEntry")(fmtPx(G.pos.entry), fmtWon(G.pos.margin))}<br>` +
+      ` ${t("posEntry")(fmtPx(G.pos.entry), fmtMoney(G.pos.margin))}<br>` +
       (G.pos.liqPx > 0.01
         ? `<span class="liq-info">${t("posLiqInfo")(fmtPx(G.pos.liqPx), pct(liqDist))}</span>`
         : `<span class="liq-info">${t("posNoLiq")}</span>`);
@@ -543,10 +548,25 @@ function applyLocale() {
     const v = t(el.dataset.i18n);
     if (v !== undefined) el.innerHTML = v;
   });
-  if (MANIFEST) $("#f-updated").textContent = t("footerData")(MANIFEST.updated);
+  if (MANIFEST) $("#f-data").textContent = t("footerData")(MANIFEST.updated);
   const langBtn = $("#btn-lang");
   if (langBtn) langBtn.textContent = LOCALE === "ko" ? "EN" : "KO";
   document.documentElement.lang = LOCALE;
+  // 티어 chip (게임 중에도 즉시 반영)
+  if (G.chart && G.phase !== "intro") {
+    const tier = G.chart.tier;
+    const tierName = LOCALE === "en" ? (TIER_EN[tier] || tier) : tier;
+    $("#g-tier").textContent = `${TIER_EMOJI[tier] || "🪙"} ${tierName}`;
+  }
+  // 플레이 버튼 텍스트 (동적 상태)
+  if (G.phase === "playing") {
+    const btn = $("#btn-pause");
+    if (btn && !btn.disabled) {
+      if (!G.started) btn.textContent = t("btnPlayStart");
+      else if (G.paused) btn.textContent = t("btnPlayResume");
+      else btn.textContent = t("btnPlayPause");
+    }
+  }
 }
 
 function setLocale(lang) {
@@ -575,7 +595,7 @@ async function init() {
     const b = $("#challenge-banner");
     b.classList.remove("hidden");
     b.innerHTML = G.challenge.r != null
-      ? t("challengeArrived")(fmtWon(G.challenge.r))
+      ? t("challengeArrived")(fmtMoney(G.challenge.r))
       : t("challengeArrivedNoScore");
   }
 
@@ -728,7 +748,8 @@ async function startGame() {
     closes: 0, wins: 0, maxLev: 0, liq: false, liqInfo: null, result: null,
   });
 
-  $("#g-tier").textContent = `${TIER_EMOJI[chart.tier] || "🪙"} ${chart.tier} · ${t("tierUnit")}`;
+  const tierName = LOCALE === "en" ? (TIER_EN[chart.tier] || chart.tier) : chart.tier;
+  $("#g-tier").textContent = `${TIER_EMOJI[chart.tier] || "🪙"} ${tierName} · ${t("tierUnit")}`;
   $("#g-day").textContent = t("previewPhase");
   // 미리보기 단계에서도 본게임 UI를 그대로 노출 (버튼은 사전 차트 그리는 동안만 잠금)
   $("#play-ui").classList.remove("hidden");
@@ -1045,7 +1066,7 @@ function behaviorTag() {
   if (r.nTrades === 0) return t("behaviorNoEntry");
   if (r.maxLev >= 50) return t("behavior50x");
   if (r.maxLev >= 10) return t("behaviorHighLev")(r.maxLev);
-  if (G.switches >= 8) return t("behaviorPingpong")(G.switches, fmtWon(r.fees));
+  if (G.switches >= 8) return t("behaviorPingpong")(G.switches, fmtMoney(r.fees));
   if (r.nTrades >= 25) return t("behaviorOvertrading")(r.nTrades);
   if (r.winRate != null && r.winRate >= 0.6 && G.closes >= 3) return t("behaviorWinRate")((r.winRate * 100).toFixed(0));
   return t("behaviorSummary")(r.nTrades, r.maxLev);
@@ -1069,10 +1090,10 @@ function renderResult() {
   const retHtml = (v) => `<span class="${v >= 0 ? "plus" : "minus"}">${pct(v)}</span>`;
   // 청산 판은 이후 시세를 못 본 상태 — 벤치마크 수익률도 숨겨 복수전의 공정성을 지킨다
   $("#r-vs").innerHTML = G.liq
-    ? row(t("vsMyFuturesFull")(fmtWon(r.equity)), `<span class="liq-mark">${t("liqMark")}</span>`, true) +
+    ? row(t("vsMyFuturesFull")(fmtMoney(r.equity)), `<span class="liq-mark">${t("liqMark")}</span>`, true) +
       row(t("vsSpot"), `<span class="liq-mark">${t("vsLiqAfter")}</span>`) +
       row(t("vs10x"), `<span class="liq-mark">${t("vs10xAfter")}</span>`)
-    : row(t("vsMyFuturesFull")(fmtWon(r.equity)), retHtml(r.myRet), true) +
+    : row(t("vsMyFuturesFull")(fmtMoney(r.equity)), retHtml(r.myRet), true) +
       row(t("vsSpot"), retHtml(r.bhRet)) +
       row(t("vs10x"), r.lev10Liq ? `<span class="liq-mark">${t("vs10xLiqLabel")}</span>` : retHtml(r.lev10Ret));
 
@@ -1081,7 +1102,7 @@ function renderResult() {
     <div class="stat"><span>${t("statTrades")}</span><b>${t("statTradesVal")(r.nTrades)}</b></div>
     <div class="stat"><span>${t("statWinRate")}</span><b>${winTxt}</b></div>
     <div class="stat"><span>${t("statMdd")}</span><b>-${(r.mdd * 100).toFixed(1)}%</b></div>
-    <div class="stat"><span>${t("statFees")}</span><b>${fmtWon(r.fees)}</b></div>
+    <div class="stat"><span>${t("statFees")}</span><b>${fmtMoney(r.fees)}</b></div>
     <div class="stat"><span>${t("statMaxLev")}</span><b>${r.maxLev ? t("statMaxLevVal")(r.maxLev) : "-"}</b></div>
     <div class="stat"><span>${t("statLongShort")}</span><b>${G.longs} : ${G.shorts}</b></div>`;
 
@@ -1090,10 +1111,10 @@ function renderResult() {
     const mine = r.equity, theirs = G.challenge.r;
     cEl.classList.remove("hidden");
     cEl.innerHTML = mine > theirs
-      ? t("challengeWin")(fmtWon(mine), fmtWon(theirs))
+      ? t("challengeWin")(fmtMoney(mine), fmtMoney(theirs))
       : mine < theirs
-      ? t("challengeLose")(fmtWon(mine), fmtWon(theirs))
-      : t("challengeTie")(fmtWon(mine));
+      ? t("challengeLose")(fmtMoney(mine), fmtMoney(theirs))
+      : t("challengeTie")(fmtMoney(mine));
   } else cEl.classList.add("hidden");
 
   // 손실/청산으로 끝났으면 복수전 리워드 광고 기회 제공
@@ -1290,7 +1311,7 @@ async function saveCard() {
     ctx.fillText(t("cardLiqLine"), W / 2, 592);
   } else {
     ctx.fillStyle = r.myRet >= 0 ? "#ff4d4d" : "#4d7fff";
-    ctx.fillText(t("cardMyLine")(pct(r.myRet), fmtWon(r.equity)), W / 2, 592);
+    ctx.fillText(t("cardMyLine")(pct(r.myRet), fmtMoney(r.equity)), W / 2, 592);
   }
   ctx.fillStyle = "#8b93b8"; ctx.font = "400 38px Pretendard, sans-serif";
   ctx.fillText(liq ? t("cardLiqSpotHidden") : t("cardSpotLine")(pct(r.bhRet)), W / 2, 646);
@@ -1314,7 +1335,7 @@ async function saveCard() {
     const win = r.equity > G.challenge.r;
     ctx.fillStyle = win ? "#ff4d4d" : "#4d7fff";
     ctx.font = "700 34px Pretendard, sans-serif";
-    ctx.fillText(win ? t("cardChallengeWin")(fmtWon(G.challenge.r)) : t("cardChallengeWith")(fmtWon(G.challenge.r)), W / 2, 1360);
+    ctx.fillText(win ? t("cardChallengeWin")(fmtMoney(G.challenge.r)) : t("cardChallengeWith")(fmtMoney(G.challenge.r)), W / 2, 1360);
   }
 
   ctx.fillStyle = "#4a5278"; ctx.font = "400 26px Pretendard, sans-serif";

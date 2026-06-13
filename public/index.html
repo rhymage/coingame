@@ -25,7 +25,7 @@
 </script>
 <link rel="preconnect" href="https://cdn.jsdelivr.net">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
-<link rel="stylesheet" href="style.css?v=5">
+<link rel="stylesheet" href="style.css?v=6">
 </head>
 <body>
 <div class="wrap">
@@ -66,7 +66,7 @@
           <button data-sp="0.5">0.5x</button><button data-sp="1" class="on">1x</button><button data-sp="2">2x</button>
         </span>
         <button id="btn-pause" class="start" disabled>▶ 선물 매매 시작</button>
-        <button id="btn-step" disabled>⏭ +1봉</button>
+        <button id="btn-step" disabled data-i18n="btnStep">⏭ +1봉</button>
       </div>
       <div class="stat-row two">
         <div class="stat"><span data-i18n="statEquityLabel">총자산</span><b id="g-equity">1,000만원</b></div>
@@ -130,7 +130,7 @@
   </section>
 
   <footer>
-    <p>실제 과거 시세(바이낸스 5분봉, 시작가 100 지수화) 기반 모의투자 게임 · 펀딩비/슬리피지 미반영 · <span id="f-updated"></span></p>
+    <p id="f-data"></p>
     <p data-i18n="footerDisclaimer">본 게임은 재미를 위한 것으로 투자 권유가 아니며, 게임 성적은 실제 투자 실력을 보장하지 않습니다.</p>
     <p class="footer-links"><a href="https://app.rhymage.com/">Rhymage Apps</a><a href="/privacy.html">개인정보처리방침</a><a href="/about.html">서비스 소개</a><button class="lang-toggle" id="btn-lang">EN</button></p>
   </footer>
@@ -171,6 +171,6 @@
   </div>
 </div>
 
-<script src="app.js?v=11"></script>
+<script src="app.js?v=12"></script>
 </body>
 </html>

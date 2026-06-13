@@ -335,5 +335,11 @@ footer p { margin-top: 4px; }
 #confirm-cancel { background: var(--panel2); color: var(--text); border: 1px solid #4a5278; }
 #confirm-ok { background: var(--accent); color: #221700; }
 .confirm-actions button:active { transform: scale(.97); }
-.footer-links { display: flex; justify-content: center; gap: 14px; margin-top: 10px; }
+.footer-links { display: flex; justify-content: center; align-items: center; gap: 14px; margin-top: 10px; flex-wrap: wrap; }
 .footer-links a { color: #8b93b8; }
+.lang-toggle {
+  background: none; border: 1px solid #2a3158; border-radius: 8px;
+  color: var(--sub); font-size: 12px; font-weight: 700; font-family: inherit;
+  padding: 3px 9px; cursor: pointer; line-height: 1.4;
+}
+.lang-toggle:hover { border-color: var(--accent); color: var(--accent); }

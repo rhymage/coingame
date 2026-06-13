@@ -12,6 +12,242 @@ const LEVS = [1, 2, 5, 10, 20, 50];
 
 const TIER_EMOJI = { "메이저": "👑", "알트코인": "🌊", "밈코인": "🐶" };
 
+// ── 다국어 (KO / EN) ──
+const STRINGS = {
+  ko: {
+    h1sub:"차트만 보고 롱·숏 치는", h1main:"🚀 코인선물 적성검사",
+    tagline:"실제 차트, 가상자금 1,000만원, 최대 50배 레버리지. 살아남을 수 있을까?",
+    rule1:"🎲 <b>정체불명의 코인</b>이 랜덤으로 선택됩니다 (등급만 공개 · 가격은 100 기준 지수화)",
+    rule2:"📜 먼저 <b>직전 20시간(5분봉 240개)</b>이 그려집니다. 흐름을 파악하세요",
+    rule3:"📈 <b>▶ 시작</b>을 누르면 이어서 20시간(240봉)이 흘러가요 — <b>롱/숏</b> 전환 자유!",
+    rule4:"⚡ 레버리지 <b>1~50배</b> · 진입은 전액 증거금 · 진입/종료마다 <b>수수료 0.05%</b>",
+    rule5:"💀 증거금이 소진되면 <b>강제청산 = 즉시 게임 오버</b>. 50배는 단 <b>-1.5%</b>면 끝장",
+    rule6:"🏁 종료 후 <b>코인 공개</b> + 현물 존버와 성적 비교",
+    btnStart:"🚀 검사 시작", btnAgain:"🔄 한 판 더", btnCard:"📸 결과 공유", btnRestart:"🔄 다시시작",
+    ma20:"― 20봉선", ma60:"― 60봉선", ma120:"― 120봉선",
+    startHint:"📜 직전 20시간 차트입니다. <b>▶ 선물 매매 시작</b>을 누르면 이어서 그려져요 — 미리 진입해둬도 됩니다.",
+    statEquityLabel:"총자산", statRetLabel:"수익률", levLabel:"레버리지",
+    btnClose:"✅ 포지션 종료 (익절/손절)", roeLabel:"증거금 대비 손익 (ROE)",
+    revealPre:"당신이 롱·숏 치던 코인은...", gradeLabel:"선물 적성",
+    btnChallenge:"⚔️ 친구에게 도전장 보내기",
+    challengeDesc:"내가 방금 플레이한 <b>똑같은 코인·똑같은 구간</b>으로 친구가 대결하는 링크를 보냅니다.<br>친구의 결과 화면에 승패가 자동으로 표시돼요. (친구에게도 코인은 비밀)",
+    copyBtn:"복사",
+    caveatTitle:"⚠️ 실제 선물 시장은 이 게임보다 훨씬 가혹합니다",
+    caveat1:"이 게임엔 <b>펀딩비(보유 수수료)·슬리피지·호가 스프레드가 없고</b>, 청산 시 발생하는 <b>청산 수수료와 보험기금 차감</b>도 단순화되어 있습니다. 실제 고배율 선물에선 순간적인 꼬리(휩쏘) 한 번에 증거금 전체가 사라지며, 통계적으로 <b>선물 트레이더 대다수가 손실</b>로 끝납니다.",
+    caveat2:"따라서 이 게임의 수익률은 <b>실제 투자 수익을 전혀 보장하지 않습니다.</b>",
+    otherGame:"주식단타 적성검사 해보기",
+    cardModalTitle:"📸 결과 카드", shareSave:"저장", shareCopy:"복사", shareNativeBtn:"공유", closeBtn:"닫기 ✕",
+    footerDisclaimer:"본 게임은 재미를 위한 것으로 투자 권유가 아니며, 게임 성적은 실제 투자 실력을 보장하지 않습니다.",
+    previewPhase:"직전 20시간",
+    btnPlayLoading:"⏳ 차트 그리는 중", btnPlayStart:"▶ 선물 매매 시작",
+    btnPlayPause:"⏸ 일시정지", btnPlayResume:"▶ 재개", btnStep:"⏭ +1봉",
+    noPos:"현재 포지션 없음 — 방향을 정해 진입하세요",
+    longHeld:"🔺 롱 보유 중", longEntry:"🔺 롱 진입", longSwitch:"🔺 롱 전환",
+    shortHeld:"🔻 숏 보유 중", shortEntry:"🔻 숏 진입", shortSwitch:"🔻 숏 전환",
+    hintOpposite:"반대 버튼 = 스위칭", hintFee:"종료+진입 수수료 2번",
+    hintLong:"오를 것 같다", hintShort:"내릴 것 같다",
+    toastNoPos:"종료할 포지션이 없어요 😅",
+    toastAlreadyLong:"이미 롱 보유 중이에요", toastAlreadyShort:"이미 숏 보유 중이에요",
+    toastLevLocked:"포지션 종료 후 레버리지를 바꿀 수 있어요",
+    toastQueued:"다음 봉 시가 체결", toastFilled:"체결 (현재가)",
+    toastLevWarn:(lev,pct)=>`⚠️ ${lev}배: 가격이 약 ${pct}% 반대로 가면 강제청산됩니다`,
+    confirmRestart:"이 판을 버리고 다시 시작할까요?", confirmOk:"다시 시작", confirmCancel:"취소",
+    chartRemain:(n)=>`⏳ 남은 ${n}봉`,
+    chartStart:"▶ 시작", chartEntry:(px)=>`진입 ${px}`, chartLiq:(px)=>`💀 청산 ${px}`,
+    chartPriceLine:"— 코인 가격", chartAssetLine:"— 내 자산",
+    hiddenIcon:"❓", hiddenLabel1:"청산 이후 미공개", hiddenLabel2:"복수전에서 확인",
+    hiddenLabelBig:"청산 이후 미공개",
+    statTrades:"진입 횟수", statWinRate:"익절 승률", statMdd:"최대 낙폭",
+    statFees:"총 수수료", statMaxLev:"최고 레버리지", statLongShort:"롱 : 숏",
+    vsMyFutures:"🫵 나의 선물", vsSpot:"💎 현물로 존버했다면", vs10x:"🎰 10배 롱 존버였다면",
+    vsLiqAfter:"❓ 미공개", vs10xLiqLabel:"💀 강제청산", vs10xAfter:"❓ 끝까지 살아남으면 공개",
+    liqMark:"💀 청산 -100%",
+    challengeArrived:(won)=>`⚔️ <b>도전장 도착!</b> 상대의 최종 자산은 <b>${won}</b>. 같은 차트로 이겨보세요.`,
+    challengeArrivedNoScore:"⚔️ <b>도전장 도착!</b> 친구와 같은 차트로 대결합니다.",
+    challengeWin:(me,them)=>`🏆 <b>승리!</b> 나 ${me} vs 상대 ${them}`,
+    challengeLose:(me,them)=>`😭 <b>패배...</b> 나 ${me} vs 상대 ${them}`,
+    challengeTie:(me)=>`🤝 무승부! 둘 다 ${me}`,
+    challengeCopied:"✅ 복사됐어요! 카톡창에 붙여넣어 보내세요.<small>다시 누르면 재복사</small>",
+    challengeManual:"아래 링크를 복사해서 친구에게 보내세요 👇",
+    revengeAd:"📺 광고 보고 같은 차트로 복수전", revengeFree:"🔥 같은 차트로 복수전",
+    revengeSub:"이번엔 앞 흐름을 알고 친다 — 설욕의 기회",
+    cardSaved:"이미지를 저장했어요! 💾",
+    cardCopied:"카드 이미지가 복사됐어요! 붙여넣기 하세요 📋",
+    cardCopyFail:"이 브라우저는 이미지 복사가 안 돼요. '이미지 저장'을 이용해 주세요 🙏",
+    shareTextLiq:"💀 코인선물 적성검사에서 강제청산당했다... 증거금 전액이 사라짐. 너는 살아남을 수 있냐? ⚔️",
+    shareText:(grade,ret,bh)=>`🚀 코인선물 적성검사 ${grade}등급! ${ret} 달성 (현물 존버 ${bh}). 너도 한번 해봐 ⚔️`,
+    shareNativeFallback:"텍스트와 링크를 복사했어요! 어디든 붙여넣기 해서 공유하세요 📋",
+    shareNativeFail:"공유 기능이 지원되지 않아요. '복사' 버튼을 이용해 주세요 🙏",
+    dashTitle:"📊 내 선물 기록",
+    dashGames:"판수", dashBeats:"존버 이긴 비율", dashLiqs:"강제청산", dashBest:"최고 등급",
+    dashLiqLabel:"💀 청산", dashGradeLabel:"등급",
+    footerData:(date)=>`실제 과거 시세(바이낸스 5분봉, 시작가 100 지수화) 기반 모의투자 게임 · 펀딩비/슬리피지 미반영 · ${date} 데이터`,
+    cardTitle:"🚀 차트만 보고 롱·숏 치는 - 코인선물 적성검사",
+    cardLiqLine:"나의 선물 💀 강제청산 (-100%)",
+    cardLiqSpotHidden:"청산 이후 시세는 미공개 — 복수전에서 확인",
+    cardSpotLine:(ret)=>`현물 존버였다면 ${ret}`,
+    cardMyLine:(ret,won)=>`나의 선물 ${ret}  (${won})`,
+    cardFootnote:"너도 해봐 → 차트만 보고 롱·숏 치는 - 코인선물 적성검사",
+    cardChallengeWin:(them)=>`🏆 도전 승리! 상대 ${them}`,
+    cardChallengeWith:(them)=>`상대 ${them}와 대결`,
+    cardStats:(t,w,m,l)=>`진입 ${t}회    익절 승률 ${w}    최대 낙폭 -${m}%    최고 ${l}배`,
+    gradeLiqComment:(lev,day)=>`💀 ${lev?lev+"배 레버리지로 ":""}강제청산 — 증거금 1,000만원 전액이 사라졌습니다. 실제 선물 시장에서 매일 일어나는 일입니다.`,
+    gradePosProfit:(ret,bh)=>`💰 ${ret} 익절 성공 — 익절은 언제나 옳습니다! 다만 현물로 들고만 있었어도 ${bh}였기에 선물 점수는 아쉬워요.`,
+    gradeProfitC:(bh)=>`💰 익절은 옳다! 수익도 냈고 현물 존버(${bh})와 비슷한 성적. 나쁘지 않아요. 🙂`,
+    gradeComment:{
+      SSS:["존버를 60%p 넘게 압도했습니다. 차트가 미래를 속삭여주나요? 🏆","대폭락장을 숏으로 지배했습니다. 시장의 포식자. 🦈"],
+      SS:["롱과 숏을 자유자재로. 거래소가 당신을 주시하기 시작했습니다. 🔥","폭락장에서 살아남는 걸 넘어 압승했습니다. 숏의 정석. 🛡️"],
+      S:["당신... 혹시 청산당해 본 적이 없으신가요? 시장을 압살했습니다. 👑","무너지는 시장에서 이 방어력이라니. 도망과 숏은 실력입니다. 🏃"],
+      A:["선물 적성 확실합니다. 실전엔 펀딩비와 슬리피지가 있다는 것만 기억하세요. 😎","시장은 무너졌지만 당신은 덜 무너졌습니다. 생존왕. 🪖"],
+      B:["존버보다 잘했습니다. 청산도 안 당했고요. 소질이 보여요. 🙂","손실은 났지만 존버보단 나았어요. 위기 감지 능력 있음. 🦊"],
+      C:["레버리지까지 쓰고 고생했는데 성적은 현물 존버와 비슷해요. 😴","이러나 저러나 비슷하게 잃었습니다. 수수료만 기부했네요. 😮‍💨"],
+      D:["방향을 거꾸로 타는 재능이 있습니다. 손은 주머니에. 🫠","롱 잡으면 떨어지고 숏 잡으면 오르고. 시장이 당신을 보고 있어요. 👁️"],
+      F:["축하합니다. 당신은 거래소의 우수 고객이었습니다. 선물 금지. 🚫","고점 롱 저점 숏의 정석. 교과서에 반면교사로 실립니다. 📚"],
+      "?":["진입을 안 하면 적성을 알 수 없습니다. 다음 판엔 버튼을 눌러보세요. 👀","진입을 안 하면 적성을 알 수 없습니다. 다음 판엔 버튼을 눌러보세요. 👀"],
+    },
+    behaviorLiq:(lev,day)=>`💀 ${lev}배 진입 후 ${day}번째 봉에서 청산 — 보험기금에 기부 완료`,
+    behaviorNoEntry:"👀 단 한 번도 진입하지 않은 관전형",
+    behavior50x:"🎰 50배 풀레버 생존자 — 청산까지 1.5%였습니다. 간이 부었어요",
+    behaviorHighLev:(lev)=>`🎰 ${lev}배 레버리지 생존자 — 간이 큽니다`,
+    behaviorPingpong:(n,fee)=>`🔄 롱숏 핑퐁 ${n}회 — 수수료만 ${fee}`,
+    behaviorOvertrading:(n)=>`🔥 뇌동매매 경보 — 20시간에 ${n}회 진입`,
+    behaviorWinRate:(pct)=>`🎯 익절 승률 ${pct}% — 타이밍 감각 있음`,
+    behaviorSummary:(n,lev)=>`✂️ 총 ${n}회 진입 (최고 ${lev}배)`,
+    hudDay:(d,n,h)=>`${d}/${n}봉 · 남은 약 ${h}시간`,
+    tierUnit:"5분봉",
+    side1:"롱", sideN1:"숏",
+    posEntry:(e,m)=>`· 진입 ${e} · 증거금 ${m}`,
+    posLiqInfo:(p,d)=>`💀 청산가 ${p} (현재가 대비 ${d})`,
+    posNoLiq:"💀 청산가 없음 (1배 롱)",
+    cardFilename:"코인선물적성검사.png",
+    statTradesVal:(n)=>`${n}회`,
+    statMaxLevVal:(n)=>`${n}배`,
+    dashGradeEntry:(g)=>`${g}등급`,
+    dashRowSuffix:(me,hold)=>`나 ${me} / 존버 ${hold}`,
+    cardPeriodLabel:"20시간 선물",
+    vsMyFuturesFull:(won)=>`🫵 나의 선물 (최종 ${won})`,
+  },
+  en: {
+    h1sub:"Long or Short on Charts —", h1main:"🚀 Crypto Futures Aptitude Test",
+    tagline:"Real charts, virtual ₩10M, up to 50× leverage. Can you survive?",
+    rule1:"🎲 A <b>mystery coin</b> is randomly selected (tier shown · price indexed to 100)",
+    rule2:"📜 First, the <b>past 20 hours (240 × 5-min candles)</b> are drawn. Read the flow.",
+    rule3:"📈 Hit <b>▶ Start</b> and the next 20 hours unfold — switch <b>Long/Short</b> freely!",
+    rule4:"⚡ Leverage <b>1–50×</b> · Full-margin entry · <b>0.05% fee</b> per open/close",
+    rule5:"💀 If margin is wiped, <b>liquidation = instant game over</b>. At 50×, just <b>−1.5%</b> ends it.",
+    rule6:"🏁 At the end, <b>coin revealed</b> + compared against spot buy-and-hold",
+    btnStart:"🚀 Start Test", btnAgain:"🔄 Play Again", btnCard:"📸 Share Result", btnRestart:"🔄 Restart",
+    ma20:"― MA20", ma60:"― MA60", ma120:"― MA120",
+    startHint:"📜 Past 20-hour chart. Hit <b>▶ Start Futures Trading</b> to continue — you can enter a position now.",
+    statEquityLabel:"Total Equity", statRetLabel:"Return", levLabel:"Leverage",
+    btnClose:"✅ Close Position (TP/SL)", roeLabel:"Return on Margin (ROE)",
+    revealPre:"The coin you traded was…", gradeLabel:"Futures Aptitude",
+    btnChallenge:"⚔️ Challenge a Friend",
+    challengeDesc:"Sends a link where your friend plays the <b>exact same coin &amp; time window</b>.<br>Win/loss appears automatically on their result. (Coin stays hidden from them too)",
+    copyBtn:"Copy",
+    caveatTitle:"⚠️ Real futures markets are far harsher than this game",
+    caveat1:"This game has <b>no funding rates, slippage, or spread</b>, and <b>liquidation fees and insurance fund deductions</b> are simplified. In real high-leverage futures, a single wick can wipe your entire margin, and statistically <b>most futures traders end up losing</b>.",
+    caveat2:"Therefore, this game's returns <b>do not guarantee real investment performance in any way.</b>",
+    otherGame:"Try the Stock Day-Trading Test",
+    cardModalTitle:"📸 Result Card", shareSave:"Save", shareCopy:"Copy", shareNativeBtn:"Share", closeBtn:"Close ✕",
+    footerDisclaimer:"For entertainment only — not investment advice. Game results do not guarantee actual trading performance.",
+    previewPhase:"Past 20 Hours",
+    btnPlayLoading:"⏳ Drawing chart…", btnPlayStart:"▶ Start Futures Trading",
+    btnPlayPause:"⏸ Pause", btnPlayResume:"▶ Resume", btnStep:"⏭ +1 Candle",
+    noPos:"No position — choose a direction to enter",
+    longHeld:"🔺 Long held", longEntry:"🔺 Long", longSwitch:"🔺 Switch to Long",
+    shortHeld:"🔻 Short held", shortEntry:"🔻 Short", shortSwitch:"🔻 Switch to Short",
+    hintOpposite:"Opposite = switch", hintFee:"Close + open (2× fee)",
+    hintLong:"Bet it goes up", hintShort:"Bet it goes down",
+    toastNoPos:"No position to close 😅",
+    toastAlreadyLong:"Already holding Long", toastAlreadyShort:"Already holding Short",
+    toastLevLocked:"Close position before changing leverage",
+    toastQueued:"Queued — fills at next candle open", toastFilled:"Filled (current price)",
+    toastLevWarn:(lev,pct)=>`⚠️ ${lev}×: Liquidated if price moves ~${pct}% against you`,
+    confirmRestart:"Abandon this game and restart?", confirmOk:"Restart", confirmCancel:"Cancel",
+    chartRemain:(n)=>`⏳ ${n} candles left`,
+    chartStart:"▶ Start", chartEntry:(px)=>`Entry ${px}`, chartLiq:(px)=>`💀 Liq ${px}`,
+    chartPriceLine:"— Coin Price", chartAssetLine:"— My Equity",
+    hiddenIcon:"❓", hiddenLabel1:"Hidden after liquidation", hiddenLabel2:"Rematch to unlock",
+    hiddenLabelBig:"Hidden after liquidation",
+    statTrades:"Entries", statWinRate:"Win Rate", statMdd:"Max Drawdown",
+    statFees:"Total Fees", statMaxLev:"Max Leverage", statLongShort:"Long : Short",
+    vsMyFutures:"🫵 My Futures", vsSpot:"💎 Spot Buy-and-Hold", vs10x:"🎰 10× Long Buy-and-Hold",
+    vsLiqAfter:"❓ Hidden", vs10xLiqLabel:"💀 Liquidated", vs10xAfter:"❓ Survive to unlock",
+    liqMark:"💀 Liq −100%",
+    challengeArrived:(won)=>`⚔️ <b>Challenge received!</b> Opponent's final equity: <b>${won}</b>. Beat them!`,
+    challengeArrivedNoScore:"⚔️ <b>Challenge received!</b> Same chart as your friend.",
+    challengeWin:(me,them)=>`🏆 <b>Victory!</b> You ${me} vs opponent ${them}`,
+    challengeLose:(me,them)=>`😭 <b>Defeat...</b> You ${me} vs opponent ${them}`,
+    challengeTie:(me)=>`🤝 Draw! Both ${me}`,
+    challengeCopied:"✅ Copied! Paste it to your friend.<small>Click again to recopy</small>",
+    challengeManual:"Copy the link below and send it to your friend 👇",
+    revengeAd:"📺 Watch an ad · Rematch on same chart", revengeFree:"🔥 Rematch on same chart",
+    revengeSub:"You know the lead-in this time — get your revenge",
+    cardSaved:"Image saved! 💾",
+    cardCopied:"Card image copied! Paste anywhere 📋",
+    cardCopyFail:"This browser doesn't support image copy. Use 'Save' instead 🙏",
+    shareTextLiq:"💀 Got liquidated in the Crypto Futures Test... Entire margin wiped. Can you survive? ⚔️",
+    shareText:(grade,ret,bh)=>`🚀 Crypto Futures Test — Grade ${grade}! ${ret} (spot hold ${bh}). Try it! ⚔️`,
+    shareNativeFallback:"Text and link copied! Paste anywhere to share 📋",
+    shareNativeFail:"Sharing not supported. Use the 'Copy' button instead 🙏",
+    dashTitle:"📊 My Futures Record",
+    dashGames:"Games", dashBeats:"Beat buy-and-hold", dashLiqs:"Liquidations", dashBest:"Best grade",
+    dashLiqLabel:"💀 Liq", dashGradeLabel:"Grade",
+    footerData:(date)=>`Simulated trading on real historical prices (Binance 5-min, indexed to 100) · No funding/slippage · ${date} data`,
+    cardTitle:"🚀 Long or Short on Charts — Crypto Futures Aptitude Test",
+    cardLiqLine:"My Futures 💀 Liquidated (−100%)",
+    cardLiqSpotHidden:"Price after liq hidden — play Rematch to see",
+    cardSpotLine:(ret)=>`Spot hold: ${ret}`,
+    cardMyLine:(ret,won)=>`My Futures ${ret}  (${won})`,
+    cardFootnote:"Try it → Crypto Futures Aptitude Test",
+    cardChallengeWin:(them)=>`🏆 Challenge won! Opponent: ${them}`,
+    cardChallengeWith:(them)=>`vs opponent ${them}`,
+    cardStats:(t,w,m,l)=>`${t} entries    Win rate ${w}    Max DD −${m}%    Max ${l}×`,
+    gradeLiqComment:(lev,day)=>`💀 Liquidated ${lev?"at "+lev+"×":""} — your entire ₩10M margin is gone. This happens every day in real futures markets.`,
+    gradePosProfit:(ret,bh)=>`💰 ${ret} profit taken — always right to take profit! But spot hold alone gave ${bh}, so futures score is lower.`,
+    gradeProfitC:(bh)=>`💰 Profit is right! Made gains, matching spot hold (${bh}). Not bad. 🙂`,
+    gradeComment:{
+      SSS:["You crushed buy-and-hold by 60%+. Can you read the future? 🏆","You dominated the crash with shorts. Apex predator. 🦈"],
+      SS:["Longs and shorts at will. The exchange is watching you now. 🔥","Not just survived the crash — you won big. Short mastery. 🛡️"],
+      S:["...Have you ever been liquidated? You crushed the market. 👑","That defense in a falling market is elite. Running and shorting IS skill. 🏃"],
+      A:["Clear futures aptitude. Just remember: real trading has funding fees. 😎","The market fell but you fell less. Survivor king. 🪖"],
+      B:["Beat buy-and-hold. No liquidation either. Potential showing. 🙂","Losses, but less than hodling. Decent risk sense. 🦊"],
+      C:["Used leverage, struggled — ended up same as spot hold. 😴","Either way, similar losses. You just donated fees. 😮‍💨"],
+      D:["You have a talent for going the wrong direction. Hands in pockets. 🫠","Buy → drops, short → pumps. The market is watching you. 👁️"],
+      F:["Congratulations — you were the exchange's VIP customer. Futures banned. 🚫","Top-buy, bottom-short. A textbook example of what not to do. 📚"],
+      "?":["Can't measure aptitude without trading. Press some buttons next time. 👀","Can't measure aptitude without trading. Press some buttons next time. 👀"],
+    },
+    behaviorLiq:(lev,day)=>`💀 Liquidated at ${lev}× on candle ${day} — donated to the insurance fund`,
+    behaviorNoEntry:"👀 Observer mode — never opened a position",
+    behavior50x:"🎰 50× survivor — liquidation was 1.5% away. Bold.",
+    behaviorHighLev:(lev)=>`🎰 ${lev}× leverage survivor — fearless`,
+    behaviorPingpong:(n,fee)=>`🔄 Long-short flip-flop ${n}× — paid ${fee} in fees`,
+    behaviorOvertrading:(n)=>`🔥 Overtrading alert — ${n} entries in 20 hours`,
+    behaviorWinRate:(pct)=>`🎯 ${pct}% win rate — solid timing sense`,
+    behaviorSummary:(n,lev)=>`✂️ ${n} total entries (max ${lev}×)`,
+    hudDay:(d,n,h)=>`Candle ${d}/${n} · ~${h}h left`,
+    tierUnit:"5-min",
+    side1:"Long", sideN1:"Short",
+    posEntry:(e,m)=>`· Entry ${e} · Margin ${m}`,
+    posLiqInfo:(p,d)=>`💀 Liq ${p} (${d} from current)`,
+    posNoLiq:"💀 No liq price (1× Long)",
+    cardFilename:"crypto-futures-test.png",
+    statTradesVal:(n)=>`${n}`,
+    statMaxLevVal:(n)=>`${n}×`,
+    dashGradeEntry:(g)=>`Grade ${g}`,
+    dashRowSuffix:(me,hold)=>`Me ${me} / Hold ${hold}`,
+    cardPeriodLabel:"20h Futures",
+    vsMyFuturesFull:(won)=>`🫵 My Futures (final: ${won})`,
+  },
+};
+let LOCALE = (() => {
+  const s = localStorage.getItem("lang");
+  if (s === "ko" || s === "en") return s;
+  return navigator.language.startsWith("ko") ? "ko" : "en";
+})();
+const t = (key) => STRINGS[LOCALE][key];
+
 let MANIFEST = null;
 
 const G = {
@@ -100,9 +336,8 @@ function maybeInterstitial(then) {
 // 복수전 버튼: 손실/청산 결과일 때 항상 노출.
 // 리워드 광고가 준비되면 '광고 보고' 모드, 아니면(H5 미승인 등) 무료 복수전으로 동작.
 function setRevengeLabel() {
-  $("#btn-revenge").innerHTML = ADS.rewardShowFn
-    ? "📺 광고 보고 같은 차트로 복수전<span>이번엔 앞 흐름을 알고 친다 — 설욕의 기회</span>"
-    : "🔥 같은 차트로 복수전<span>이번엔 앞 흐름을 알고 친다 — 설욕의 기회</span>";
+  const label = ADS.rewardShowFn ? t("revengeAd") : t("revengeFree");
+  $("#btn-revenge").innerHTML = `${label}<span>${t("revengeSub")}</span>`;
 }
 function plantRevengeAd() {
   $("#btn-revenge").classList.remove("hidden");
@@ -189,19 +424,18 @@ function execute(act, lev, px, dayIdx) {
 // ── 주문 (재생 중 = 다음 봉 시가 체결 / 일시정지 중 = 현재 봉 종가 즉시 체결) ──
 function order(act) {
   if (G.phase !== "playing") return;
-  if (act === "close" && !G.pos) return toast("종료할 포지션이 없어요 😅");
+  if (act === "close" && !G.pos) return toast(t("toastNoPos"));
   if (act !== "close" && G.pos && G.pos.side === (act === "long" ? 1 : -1))
-    return toast(act === "long" ? "이미 롱 보유 중이에요" : "이미 숏 보유 중이에요");
-  const label = act === "close" ? "포지션 종료" : `${G.pos ? "스위칭 → " : ""}${act === "long" ? "롱" : "숏"} ${G.lev}배`;
+    return toast(act === "long" ? t("toastAlreadyLong") : t("toastAlreadyShort"));
   if (G.paused) {
     execute(act, G.lev, G.chart.c[bar(G.day)], G.day);
     updateHud();
     drawGameChart();
-    toast(`${label} 체결 (현재가)`);
+    toast(t("toastFilled"));
     return;
   }
   G.pending.push({ act, lev: G.lev });
-  toast(`${label} 주문 — 다음 봉 시가 체결`);
+  toast(t("toastQueued"));
 }
 
 // ── 게임 루프 ──
@@ -240,7 +474,7 @@ function updateHud() {
   const equity = equityAt(px);
   const ret = equity / START_ASSET - 1;
   const remainH = ((N - 1 - G.day) * 5) / 60;
-  $("#g-day").textContent = `${G.day + 1}/${N}봉 · 남은 약 ${remainH.toFixed(1)}시간`;
+  $("#g-day").textContent = t("hudDay")(G.day + 1, N, remainH.toFixed(1));
   $("#g-equity").textContent = fmtWon(equity);
   const r = $("#g-ret");
   r.textContent = pct(ret);
@@ -249,18 +483,18 @@ function updateHud() {
   // 포지션 패널 (청산가는 항상 노출 — 위험을 체감시키는 핵심 정보)
   const posEl = $("#g-pos");
   if (G.pos) {
-    const side = G.pos.side === 1 ? "롱" : "숏";
+    const sideName = G.pos.side === 1 ? t("side1") : t("sideN1");
     const liqDist = G.pos.liqPx / px - 1;
     posEl.className = "pos-panel " + (G.pos.side === 1 ? "long" : "short");
     posEl.innerHTML =
-      `<b class="side-${G.pos.side === 1 ? "long" : "short"}">${G.pos.side === 1 ? "🔺" : "🔻"} ${side} ${G.pos.lev}x</b>` +
-      ` · 진입 ${fmtPx(G.pos.entry)} · 증거금 ${fmtWon(G.pos.margin)}<br>` +
+      `<b class="side-${G.pos.side === 1 ? "long" : "short"}">${G.pos.side === 1 ? "🔺" : "🔻"} ${sideName} ${G.pos.lev}x</b>` +
+      ` ${t("posEntry")(fmtPx(G.pos.entry), fmtWon(G.pos.margin))}<br>` +
       (G.pos.liqPx > 0.01
-        ? `<span class="liq-info">💀 청산가 ${fmtPx(G.pos.liqPx)} (현재가 대비 ${pct(liqDist)})</span>`
-        : `<span class="liq-info">💀 청산가 없음 (1배 롱)</span>`);
+        ? `<span class="liq-info">${t("posLiqInfo")(fmtPx(G.pos.liqPx), pct(liqDist))}</span>`
+        : `<span class="liq-info">${t("posNoLiq")}</span>`);
   } else {
     posEl.className = "pos-panel";
-    posEl.textContent = "현재 포지션 없음 — 방향을 정해 진입하세요";
+    posEl.textContent = t("noPos");
   }
 
   // 진입 버튼 라벨/상태 — 포지션 상태가 바뀔 때만 다시 그린다.
@@ -269,13 +503,17 @@ function updateHud() {
   if (btnState !== updateHud.lastBtnState) {
     updateHud.lastBtnState = btnState;
     const longBtn = $("#btn-long"), shortBtn = $("#btn-short");
-    const mkLabel = (side, name, arrow, hint) => {
-      if (G.pos && G.pos.side === side) return `${arrow} ${name} 보유 중<span class="sub-label">반대 버튼 = 스위칭</span>`;
-      if (G.pos) return `${arrow} ${name} 전환<span class="sub-label">종료+진입 수수료 2번</span>`;
-      return `${arrow} ${name} 진입<span class="sub-label">${hint}</span>`;
+    const mkLabel = (isLong) => {
+      const side = isLong ? 1 : -1;
+      const [held, entry, sw, hint] = isLong
+        ? [t("longHeld"), t("longEntry"), t("longSwitch"), t("hintLong")]
+        : [t("shortHeld"), t("shortEntry"), t("shortSwitch"), t("hintShort")];
+      if (G.pos && G.pos.side === side) return `${held}<span class="sub-label">${t("hintOpposite")}</span>`;
+      if (G.pos) return `${sw}<span class="sub-label">${t("hintFee")}</span>`;
+      return `${entry}<span class="sub-label">${hint}</span>`;
     };
-    longBtn.innerHTML = mkLabel(1, "롱", "🔺", "오를 것 같다");
-    shortBtn.innerHTML = mkLabel(-1, "숏", "🔻", "내릴 것 같다");
+    longBtn.innerHTML = mkLabel(true);
+    shortBtn.innerHTML = mkLabel(false);
     longBtn.disabled = !!(G.pos && G.pos.side === 1);
     shortBtn.disabled = !!(G.pos && G.pos.side === -1);
     $("#btn-close").disabled = !G.pos;
@@ -299,10 +537,37 @@ function updateHud() {
   }
 }
 
+// ── 다국어 적용 ──
+function applyLocale() {
+  document.querySelectorAll("[data-i18n]").forEach((el) => {
+    const v = t(el.dataset.i18n);
+    if (v !== undefined) el.innerHTML = v;
+  });
+  if (MANIFEST) $("#f-updated").textContent = t("footerData")(MANIFEST.updated);
+  const langBtn = $("#btn-lang");
+  if (langBtn) langBtn.textContent = LOCALE === "ko" ? "EN" : "KO";
+  document.documentElement.lang = LOCALE;
+}
+
+function setLocale(lang) {
+  LOCALE = lang;
+  try { localStorage.setItem("lang", lang); } catch {}
+  applyLocale();
+  // 게임 중이면 동적 UI도 갱신
+  if (G.phase === "playing" || G.phase === "preview") {
+    updateHud();
+    if (G.phase === "playing") drawGameChart();
+  }
+  if (G.phase === "done" && G.result) {
+    renderResult();
+    drawResultChart();
+  }
+}
+
 // ── 초기화 ──
 async function init() {
   MANIFEST = await (await fetch("data/manifest.json")).json();
-  $("#f-updated").textContent = MANIFEST.updated + " 데이터";
+  applyLocale();
 
   const p = new URLSearchParams(location.search);
   if (p.get("g")) {
@@ -310,16 +575,18 @@ async function init() {
     const b = $("#challenge-banner");
     b.classList.remove("hidden");
     b.innerHTML = G.challenge.r != null
-      ? `⚔️ <b>도전장 도착!</b> 상대의 최종 자산은 <b>${fmtWon(G.challenge.r)}</b>. 같은 차트로 이겨보세요.`
-      : `⚔️ <b>도전장 도착!</b> 친구와 같은 차트로 대결합니다.`;
+      ? t("challengeArrived")(fmtWon(G.challenge.r))
+      : t("challengeArrivedNoScore");
   }
 
   renderDash();
+  const langBtn = $("#btn-lang");
+  if (langBtn) langBtn.onclick = () => setLocale(LOCALE === "ko" ? "en" : "ko");
   $("#btn-start").onclick = startGame;
   $("#btn-restart").onclick = async () => {
     const wasRunning = G.phase === "playing" && !G.paused && G.timer;
     if (wasRunning) { clearInterval(G.timer); G.timer = null; }
-    const ok = await askConfirm("이 판을 버리고 다시 시작할까요?", "다시 시작");
+    const ok = await askConfirm(t("confirmRestart"), t("confirmOk"));
     if (ok) { startGame(); return; }
     if (wasRunning) { G.timer = setInterval(tick, 250 / G.speed); }
   };
@@ -352,12 +619,12 @@ async function init() {
   });
   document.querySelectorAll("#lev-row button").forEach((b) => {
     b.onclick = () => {
-      if (G.pos) return toast("포지션 종료 후 레버리지를 바꿀 수 있어요");
+      if (G.pos) return toast(t("toastLevLocked"));
       G.lev = +b.dataset.lev;
       document.querySelectorAll("#lev-row button").forEach((x) => x.classList.toggle("on", x === b));
       if (G.lev >= 10) {
-        const dist = 1 - (1 - 1 / G.lev) / (1 - MMR); // 롱 기준 청산까지의 거리
-        toast(`⚠️ ${G.lev}배: 가격이 약 ${(dist * 100).toFixed(1)}% 반대로 가면 강제청산됩니다`);
+        const dist = 1 - (1 - 1 / G.lev) / (1 - MMR);
+        toast(t("toastLevWarn")(G.lev, (dist * 100).toFixed(1)));
       }
     };
   });
@@ -369,7 +636,7 @@ async function init() {
   $("#btn-copyurl").onclick = () => {
     const inp = $("#challenge-url");
     inp.focus(); inp.select();
-    try { document.execCommand("copy"); challengeMsg("복사됐어요! 친구에게 보내세요 ⚔️"); } catch {}
+    try { document.execCommand("copy"); challengeMsg(t("challengeCopied")); } catch {}
   };
 }
 
@@ -412,7 +679,7 @@ function togglePause() {
     G.paused = false;
     gaEvent("game_start", { challenge_mode: G.challenge ? "challenge" : "standard" });
     $("#start-hint").classList.add("hidden");
-    btn.textContent = "⏸ 일시정지";
+    btn.textContent = t("btnPlayPause");
     btn.className = "";
     $("#btn-step").disabled = true;
     G.timer = setInterval(tick, 250 / G.speed);
@@ -420,12 +687,12 @@ function togglePause() {
   }
   if (G.paused) {
     G.paused = false;
-    btn.textContent = "⏸ 일시정지";
+    btn.textContent = t("btnPlayPause");
     btn.classList.remove("paused");
     G.timer = setInterval(tick, 250 / G.speed);
   } else {
     G.paused = true;
-    btn.textContent = "▶ 재개";
+    btn.textContent = t("btnPlayResume");
     btn.classList.add("paused");
     clearInterval(G.timer); G.timer = null;
   }
@@ -461,13 +728,13 @@ async function startGame() {
     closes: 0, wins: 0, maxLev: 0, liq: false, liqInfo: null, result: null,
   });
 
-  $("#g-tier").textContent = `${TIER_EMOJI[chart.tier] || "🪙"} ${chart.tier} · 5분봉`;
-  $("#g-day").textContent = "직전 20시간";
+  $("#g-tier").textContent = `${TIER_EMOJI[chart.tier] || "🪙"} ${chart.tier} · ${t("tierUnit")}`;
+  $("#g-day").textContent = t("previewPhase");
   // 미리보기 단계에서도 본게임 UI를 그대로 노출 (버튼은 사전 차트 그리는 동안만 잠금)
   $("#play-ui").classList.remove("hidden");
   $("#start-hint").classList.remove("hidden");
   const pBtn = $("#btn-pause");
-  pBtn.textContent = "⏳ 차트 그리는 중";
+  pBtn.textContent = t("btnPlayLoading");
   pBtn.className = "start";
   pBtn.disabled = true;
   $("#btn-step").disabled = true;
@@ -493,7 +760,7 @@ function enterReady() {
   G.paused = true;
   G.started = false;
   const pBtn = $("#btn-pause");
-  pBtn.textContent = "▶ 선물 매매 시작";
+  pBtn.textContent = t("btnPlayStart");
   pBtn.className = "start";
   pBtn.disabled = false;
   $("#btn-step").disabled = true;
@@ -562,7 +829,7 @@ function drawCandles(cv, days, { markers = true, totalSlots = null, mini = false
     ctx.setLineDash([]);
     if (mini) {
       ctx.fillStyle = "#ffd84d66"; ctx.font = "10px sans-serif"; ctx.textAlign = "left";
-      ctx.fillText("▶ 시작", x(zeroK) + 3, padT + 9);
+      ctx.fillText(t("chartStart"), x(zeroK) + 3, padT + 9);
     }
   }
 
@@ -583,7 +850,7 @@ function drawCandles(cv, days, { markers = true, totalSlots = null, mini = false
     ctx.font = "800 30px sans-serif"; ctx.textAlign = "right";
     ctx.shadowColor = "#0a0d18"; ctx.shadowBlur = 6;
     ctx.fillStyle = "#ffd84d";
-    ctx.fillText(`⏳ 남은 ${N - 1 - G.day}봉`, W - 12, 34);
+    ctx.fillText(t("chartRemain")(N - 1 - G.day), W - 12, 34);
     ctx.restore();
   }
 
@@ -671,8 +938,8 @@ function drawCandles(cv, days, { markers = true, totalSlots = null, mini = false
         ctx.fillStyle = color;
         ctx.fillText(label, padL + 10, yy - 8);
       };
-      lineWithBadge(G.pos.entry, "#ffffffdd", `진입 ${fmtPx(G.pos.entry)}`);
-      if (G.pos.liqPx > 0.01) lineWithBadge(G.pos.liqPx, "#ff7847", `💀 청산 ${fmtPx(G.pos.liqPx)}`);
+      lineWithBadge(G.pos.entry, "#ffffffdd", t("chartEntry")(fmtPx(G.pos.entry)));
+      if (G.pos.liqPx > 0.01) lineWithBadge(G.pos.liqPx, "#ff7847", t("chartLiq")(fmtPx(G.pos.liqPx)));
     }
   }
 }
@@ -758,52 +1025,30 @@ function endGame() {
   renderResult();
 }
 
-// [기본 멘트, 내 수익률이 마이너스일 때 멘트]
-const GRADE_COMMENT = {
-  SSS: ["존버를 60%p 넘게 압도했습니다. 차트가 미래를 속삭여주나요? 🏆",
-        "대폭락장을 숏으로 지배했습니다. 시장의 포식자. 🦈"],
-  SS: ["롱과 숏을 자유자재로. 거래소가 당신을 주시하기 시작했습니다. 🔥",
-       "폭락장에서 살아남는 걸 넘어 압승했습니다. 숏의 정석. 🛡️"],
-  S: ["당신... 혹시 청산당해 본 적이 없으신가요? 시장을 압살했습니다. 👑",
-      "무너지는 시장에서 이 방어력이라니. 도망과 숏은 실력입니다. 🏃"],
-  A: ["선물 적성 확실합니다. 실전엔 펀딩비와 슬리피지가 있다는 것만 기억하세요. 😎",
-      "시장은 무너졌지만 당신은 덜 무너졌습니다. 생존왕. 🪖"],
-  B: ["존버보다 잘했습니다. 청산도 안 당했고요. 소질이 보여요. 🙂",
-      "손실은 났지만 존버보단 나았어요. 위기 감지 능력 있음. 🦊"],
-  C: ["레버리지까지 쓰고 고생했는데 성적은 현물 존버와 비슷해요. 😴",
-      "이러나 저러나 비슷하게 잃었습니다. 수수료만 기부했네요. 😮‍💨"],
-  D: ["방향을 거꾸로 타는 재능이 있습니다. 손은 주머니에. 🫠",
-      "롱 잡으면 떨어지고 숏 잡으면 오르고. 시장이 당신을 보고 있어요. 👁️"],
-  F: ["축하합니다. 당신은 거래소의 우수 고객이었습니다. 선물 금지. 🚫",
-      "고점 롱 저점 숏의 정석. 교과서에 반면교사로 실립니다. 📚"],
-  "?": ["진입을 안 하면 적성을 알 수 없습니다. 다음 판엔 버튼을 눌러보세요. 👀",
-        "진입을 안 하면 적성을 알 수 없습니다. 다음 판엔 버튼을 눌러보세요. 👀"],
-};
 function gradeComment(r) {
   if (r.grade === "💀") {
     const li = G.liqInfo;
-    return `💀 ${li ? li.lev + "배 레버리지로 " : ""}강제청산 — 증거금 1,000만원 전액이 사라졌습니다. 실제 선물 시장에서 매일 일어나는 일입니다.`;
+    return t("gradeLiqComment")(li ? li.lev : null, li ? li.day + 1 : null);
   }
-  // 수익은 냈지만 존버보다 못한 경우: 익절 응원 + 점수가 낮은 이유 설명
   if (r.myRet > 0 && (r.grade === "D" || r.grade === "F")) {
-    return `💰 ${pct(r.myRet)} 익절 성공 — 익절은 언제나 옳습니다! 다만 현물로 들고만 있었어도 ${pct(r.bhRet)}였기에 선물 점수는 아쉬워요.`;
+    return t("gradePosProfit")(pct(r.myRet), pct(r.bhRet));
   }
   if (r.myRet > 0 && r.grade === "C") {
-    return `💰 익절은 옳다! 수익도 냈고 현물 존버(${pct(r.bhRet)})와 비슷한 성적. 나쁘지 않아요. 🙂`;
+    return t("gradeProfitC")(pct(r.bhRet));
   }
-  return GRADE_COMMENT[r.grade][r.myRet < 0 ? 1 : 0];
+  return t("gradeComment")[r.grade][r.myRet < 0 ? 1 : 0];
 }
 
 function behaviorTag() {
   const r = G.result;
-  if (G.liq && G.liqInfo) return `💀 ${G.liqInfo.lev}배 진입 후 ${G.liqInfo.day + 1}번째 봉에서 청산 — 보험기금에 기부 완료`;
-  if (r.nTrades === 0) return "👀 단 한 번도 진입하지 않은 관전형";
-  if (r.maxLev >= 50) return "🎰 50배 풀레버 생존자 — 청산까지 1.5%였습니다. 간이 부었어요";
-  if (r.maxLev >= 10) return `🎰 ${r.maxLev}배 레버리지 생존자 — 간이 큽니다`;
-  if (G.switches >= 8) return `🔄 롱숏 핑퐁 ${G.switches}회 — 수수료만 ${fmtWon(r.fees)}`;
-  if (r.nTrades >= 25) return `🔥 뇌동매매 경보 — 20시간에 ${r.nTrades}회 진입`;
-  if (r.winRate != null && r.winRate >= 0.6 && G.closes >= 3) return `🎯 익절 승률 ${(r.winRate * 100).toFixed(0)}% — 타이밍 감각 있음`;
-  return `✂️ 총 ${r.nTrades}회 진입 (최고 ${r.maxLev}배)`;
+  if (G.liq && G.liqInfo) return t("behaviorLiq")(G.liqInfo.lev, G.liqInfo.day + 1);
+  if (r.nTrades === 0) return t("behaviorNoEntry");
+  if (r.maxLev >= 50) return t("behavior50x");
+  if (r.maxLev >= 10) return t("behaviorHighLev")(r.maxLev);
+  if (G.switches >= 8) return t("behaviorPingpong")(G.switches, fmtWon(r.fees));
+  if (r.nTrades >= 25) return t("behaviorOvertrading")(r.nTrades);
+  if (r.winRate != null && r.winRate >= 0.6 && G.closes >= 3) return t("behaviorWinRate")((r.winRate * 100).toFixed(0));
+  return t("behaviorSummary")(r.nTrades, r.maxLev);
 }
 
 function renderResult() {
@@ -811,7 +1056,7 @@ function renderResult() {
   show("scr-result");
   $("#challenge-msg").classList.add("hidden");
   $("#challenge-copy").classList.add("hidden");
-  $("#btn-challenge").innerHTML = "⚔️ 친구에게 도전장 보내기";
+  $("#btn-challenge").innerHTML = t("btnChallenge");
 
   $("#r-name").textContent = `${TIER_EMOJI[s.tier] || "🪙"} ${s.name} (${s.t.replace("USDT", "")}/USDT)`;
   $("#r-period").textContent = `${s.era} · ${fmtKST(barTime(0))} ~ ${fmtKST(barTime(N - 1), false)} (KST)`;
@@ -824,31 +1069,31 @@ function renderResult() {
   const retHtml = (v) => `<span class="${v >= 0 ? "plus" : "minus"}">${pct(v)}</span>`;
   // 청산 판은 이후 시세를 못 본 상태 — 벤치마크 수익률도 숨겨 복수전의 공정성을 지킨다
   $("#r-vs").innerHTML = G.liq
-    ? row(`🫵 나의 선물 (최종 ${fmtWon(r.equity)})`, `<span class="liq-mark">💀 청산 -100%</span>`, true) +
-      row(`💎 현물로 존버했다면`, `<span class="liq-mark">❓ 미공개</span>`) +
-      row(`🎰 10배 롱 존버였다면`, `<span class="liq-mark">❓ 끝까지 살아남으면 공개</span>`)
-    : row(`🫵 나의 선물 (최종 ${fmtWon(r.equity)})`, retHtml(r.myRet), true) +
-      row(`💎 현물로 존버했다면`, retHtml(r.bhRet)) +
-      row(`🎰 10배 롱 존버였다면`, r.lev10Liq ? `<span class="liq-mark">💀 강제청산</span>` : retHtml(r.lev10Ret));
+    ? row(t("vsMyFuturesFull")(fmtWon(r.equity)), `<span class="liq-mark">${t("liqMark")}</span>`, true) +
+      row(t("vsSpot"), `<span class="liq-mark">${t("vsLiqAfter")}</span>`) +
+      row(t("vs10x"), `<span class="liq-mark">${t("vs10xAfter")}</span>`)
+    : row(t("vsMyFuturesFull")(fmtWon(r.equity)), retHtml(r.myRet), true) +
+      row(t("vsSpot"), retHtml(r.bhRet)) +
+      row(t("vs10x"), r.lev10Liq ? `<span class="liq-mark">${t("vs10xLiqLabel")}</span>` : retHtml(r.lev10Ret));
 
   const winTxt = r.winRate == null ? "-" : (r.winRate * 100).toFixed(0) + "%";
   $("#r-stats").innerHTML = `
-    <div class="stat"><span>진입 횟수</span><b>${r.nTrades}회</b></div>
-    <div class="stat"><span>익절 승률</span><b>${winTxt}</b></div>
-    <div class="stat"><span>최대 낙폭</span><b>-${(r.mdd * 100).toFixed(1)}%</b></div>
-    <div class="stat"><span>총 수수료</span><b>${fmtWon(r.fees)}</b></div>
-    <div class="stat"><span>최고 레버리지</span><b>${r.maxLev || "-"}${r.maxLev ? "배" : ""}</b></div>
-    <div class="stat"><span>롱 : 숏</span><b>${G.longs} : ${G.shorts}</b></div>`;
+    <div class="stat"><span>${t("statTrades")}</span><b>${t("statTradesVal")(r.nTrades)}</b></div>
+    <div class="stat"><span>${t("statWinRate")}</span><b>${winTxt}</b></div>
+    <div class="stat"><span>${t("statMdd")}</span><b>-${(r.mdd * 100).toFixed(1)}%</b></div>
+    <div class="stat"><span>${t("statFees")}</span><b>${fmtWon(r.fees)}</b></div>
+    <div class="stat"><span>${t("statMaxLev")}</span><b>${r.maxLev ? t("statMaxLevVal")(r.maxLev) : "-"}</b></div>
+    <div class="stat"><span>${t("statLongShort")}</span><b>${G.longs} : ${G.shorts}</b></div>`;
 
   const cEl = $("#r-challenge");
   if (G.challenge && G.challenge.r != null) {
     const mine = r.equity, theirs = G.challenge.r;
     cEl.classList.remove("hidden");
     cEl.innerHTML = mine > theirs
-      ? `🏆 <b>승리!</b> 나 ${fmtWon(mine)} vs 상대 ${fmtWon(theirs)}`
+      ? t("challengeWin")(fmtWon(mine), fmtWon(theirs))
       : mine < theirs
-      ? `😭 <b>패배...</b> 나 ${fmtWon(mine)} vs 상대 ${fmtWon(theirs)}`
-      : `🤝 무승부! 둘 다 ${fmtWon(mine)}`;
+      ? t("challengeLose")(fmtWon(mine), fmtWon(theirs))
+      : t("challengeTie")(fmtWon(mine));
   } else cEl.classList.add("hidden");
 
   // 손실/청산으로 끝났으면 복수전 리워드 광고 기회 제공
@@ -889,8 +1134,8 @@ function paintResultCurves(ctx, ox, oy, w, h, big = false) {
       ctx.font = `${big ? 56 : 28}px sans-serif`;
       ctx.fillText("❓", (hx + ox + w) / 2, oy + h / 2 - (big ? 26 : 14));
       ctx.font = `700 ${big ? 32 : 17}px sans-serif`;
-      ctx.fillText("청산 이후 미공개", (hx + ox + w) / 2, oy + h / 2 + (big ? 30 : 14));
-      if (!big) ctx.fillText("복수전에서 확인", (hx + ox + w) / 2, oy + h / 2 + 34);
+      ctx.fillText(big ? t("hiddenLabelBig") : t("hiddenLabel1"), (hx + ox + w) / 2, oy + h / 2 + (big ? 30 : 14));
+      if (!big) ctx.fillText(t("hiddenLabel2"), (hx + ox + w) / 2, oy + h / 2 + 34);
     }
   }
 
@@ -912,8 +1157,8 @@ function paintResultCurves(ctx, ox, oy, w, h, big = false) {
   }
 
   ctx.textAlign = "left"; ctx.font = `${big ? 20 : 12}px sans-serif`;
-  ctx.fillStyle = "#8b93b8"; ctx.fillText("— 코인 가격", ox + pad + 4, oy + (big ? 30 : 18));
-  ctx.fillStyle = "#ffd84d"; ctx.fillText("— 내 자산", ox + pad + (big ? 160 : 90), oy + (big ? 30 : 18));
+  ctx.fillStyle = "#8b93b8"; ctx.fillText(t("chartPriceLine"), ox + pad + 4, oy + (big ? 30 : 18));
+  ctx.fillStyle = "#ffd84d"; ctx.fillText(t("chartAssetLine"), ox + pad + (big ? 160 : 90), oy + (big ? 30 : 18));
 }
 
 function drawResultChart() {
@@ -945,15 +1190,15 @@ function renderDash() {
   const order = ["SSS", "SS", "S", "A", "B", "C", "D", "F", "💀"];
   const best = order.find((g) => h.some((x) => x.grade === g)) || "-";
   dash.innerHTML = `
-    <h3>📊 내 선물 기록</h3>
+    <h3>${t("dashTitle")}</h3>
     <div class="sum">
-      <span>판수 <b>${h.length}</b></span>
-      <span>존버 이긴 비율 <b>${((beats / h.length) * 100).toFixed(0)}%</b></span>
-      <span>강제청산 <b>${liqs}회</b></span>
-      <span>최고 등급 <b>${best}</b></span>
+      <span>${t("dashGames")} <b>${h.length}</b></span>
+      <span>${t("dashBeats")} <b>${((beats / h.length) * 100).toFixed(0)}%</b></span>
+      <span>${t("dashLiqs")} <b>${liqs}</b></span>
+      <span>${t("dashBest")} <b>${best}</b></span>
     </div>
     ${h.slice(0, 5).map((x) =>
-      `<div class="hist"><span>${x.grade === "💀" ? "💀 청산" : x.grade + "등급"} · ${x.name}</span><span>나 ${x.liq ? "-100%" : pct(x.ret)} / 존버 ${x.liq ? "❓" : pct(x.bh)}</span></div>`
+      `<div class="hist"><span>${x.grade === "💀" ? t("dashLiqLabel") : t("dashGradeEntry")(x.grade)} · ${x.name}</span><span>${t("dashRowSuffix")(x.liq ? "-100%" : pct(x.ret), x.liq ? "❓" : pct(x.bh))}</span></div>`
     ).join("")}`;
 }
 
@@ -965,19 +1210,17 @@ function challengeUrl() {
 async function shareChallenge() {
   const r = G.result;
   const text = G.liq
-    ? `💀 코인선물 적성검사에서 강제청산당했다... 20시간 차트에서 너는 살아남을 수 있냐? ⚔️`
-    : `🚀 차트만 보고 롱·숏 치는 - 코인선물 적성검사 ${r.grade}등급! 20시간 롱숏으로 ${pct(r.myRet)} (현물 존버는 ${pct(r.bhRet)}). 같은 차트로 나를 이겨봐 ⚔️`;
+    ? t("shareTextLiq")
+    : t("shareText")(r.grade, pct(r.myRet), pct(r.bhRet));
   const url = challengeUrl();
   const btn = $("#btn-challenge");
-  const COPIED = '✅ 복사됐어요! 카톡창에 붙여넣어 보내세요.<small>다시 누르면 재복사</small>';
-  // 클릭 즉시 도전장(메시지+링크) 복사 → 버튼 문구로 안내. 다시 눌러도 재복사됨
+  const COPIED = t("challengeCopied");
   try {
     await navigator.clipboard.writeText(text + "\n" + url);
     btn.innerHTML = COPIED;
     gaEvent("challenge_copy", { grade: r.grade });
     return;
   } catch {}
-  // 폴백: 링크 입력칸 노출 (클립보드 권한이 막힌 환경)
   const box = $("#challenge-copy");
   box.classList.remove("hidden");
   const inp = $("#challenge-url");
@@ -988,7 +1231,7 @@ async function shareChallenge() {
     btn.innerHTML = COPIED;
     gaEvent("challenge_copy", { grade: r.grade });
   } catch {
-    challengeMsg("아래 링크를 복사해서 친구에게 보내세요 👇");
+    challengeMsg(t("challengeManual"));
   }
 }
 
@@ -1025,7 +1268,7 @@ async function saveCard() {
 
   ctx.textAlign = "center";
   ctx.fillStyle = "#ffd84d"; ctx.font = "700 36px Pretendard, sans-serif";
-  ctx.fillText("🚀 차트만 보고 롱·숏 치는 - 코인선물 적성검사", W / 2, 90);
+  ctx.fillText(t("cardTitle"), W / 2, 90);
 
   // 등급 배지
   const liq = r.grade === "💀";
@@ -1037,21 +1280,20 @@ async function saveCard() {
 
   // 코인 공개
   ctx.fillStyle = "#eef1ff"; ctx.font = "700 46px Pretendard, sans-serif";
-  ctx.fillText(`${s.name} (${s.t.replace("USDT", "")}) 20시간 선물`, W / 2, 452);
+  ctx.fillText(`${s.name} (${s.t.replace("USDT", "")}) ${t("cardPeriodLabel")}`, W / 2, 452);
   ctx.fillStyle = "#8b93b8"; ctx.font = "400 32px Pretendard, sans-serif";
   ctx.fillText(`${s.era} · ${fmtKST(barTime(0))} ~ ${fmtKST(barTime(N - 1), false)} (KST)`, W / 2, 506);
 
-  // 수익률 비교
   ctx.font = "700 50px Pretendard, sans-serif";
   if (liq) {
     ctx.fillStyle = "#ff7847";
-    ctx.fillText(`나의 선물 💀 강제청산 (-100%)`, W / 2, 592);
+    ctx.fillText(t("cardLiqLine"), W / 2, 592);
   } else {
     ctx.fillStyle = r.myRet >= 0 ? "#ff4d4d" : "#4d7fff";
-    ctx.fillText(`나의 선물 ${pct(r.myRet)}  (${fmtWon(r.equity)})`, W / 2, 592);
+    ctx.fillText(t("cardMyLine")(pct(r.myRet), fmtWon(r.equity)), W / 2, 592);
   }
   ctx.fillStyle = "#8b93b8"; ctx.font = "400 38px Pretendard, sans-serif";
-  ctx.fillText(liq ? "청산 이후 시세는 미공개 — 복수전에서 확인" : `현물 존버였다면 ${pct(r.bhRet)}`, W / 2, 646);
+  ctx.fillText(liq ? t("cardLiqSpotHidden") : t("cardSpotLine")(pct(r.bhRet)), W / 2, 646);
 
   // 코멘트
   ctx.fillStyle = "#ffd84d"; ctx.font = "400 32px Pretendard, sans-serif";
@@ -1066,18 +1308,17 @@ async function saveCard() {
   // 통계
   ctx.textAlign = "center"; ctx.fillStyle = "#8b93b8"; ctx.font = "400 30px Pretendard, sans-serif";
   const winTxt = r.winRate == null ? "-" : (r.winRate * 100).toFixed(0) + "%";
-  ctx.fillText(`진입 ${r.nTrades}회    익절 승률 ${winTxt}    최대 낙폭 -${(r.mdd * 100).toFixed(1)}%    최고 ${r.maxLev || "-"}배`, W / 2, 1300);
+  ctx.fillText(t("cardStats")(r.nTrades, winTxt, (r.mdd * 100).toFixed(1), r.maxLev || "-"), W / 2, 1300);
 
-  // 도전 결과(있으면)
   if (G.challenge && G.challenge.r != null) {
     const win = r.equity > G.challenge.r;
     ctx.fillStyle = win ? "#ff4d4d" : "#4d7fff";
     ctx.font = "700 34px Pretendard, sans-serif";
-    ctx.fillText(win ? `🏆 도전 승리! 상대 ${fmtWon(G.challenge.r)}` : `상대 ${fmtWon(G.challenge.r)}와 대결`, W / 2, 1360);
+    ctx.fillText(win ? t("cardChallengeWin")(fmtWon(G.challenge.r)) : t("cardChallengeWith")(fmtWon(G.challenge.r)), W / 2, 1360);
   }
 
   ctx.fillStyle = "#4a5278"; ctx.font = "400 26px Pretendard, sans-serif";
-  ctx.fillText("너도 해봐 → 차트만 보고 롱·숏 치는 - 코인선물 적성검사", W / 2, 1430);
+  ctx.fillText(t("cardFootnote"), W / 2, 1430);
 
   const blob = await new Promise((res) => cv.toBlob(res, "image/png"));
   openCardModal(blob);
@@ -1107,10 +1348,10 @@ function downloadCard() {
   if (!CARD_BLOB) return;
   const a = document.createElement("a");
   a.href = CARD_URL;
-  a.download = "코인선물적성검사.png";
+  a.download = t("cardFilename");
   a.click();
   gaEvent("card_save", { grade: G.result?.grade || "unknown" });
-  cardModalMsg("이미지를 저장했어요! 💾");
+  cardModalMsg(t("cardSaved"));
 }
 
 async function shareNative() {
@@ -1118,14 +1359,12 @@ async function shareNative() {
   if (!r) return;
   const url = location.origin + location.pathname;
   const liq = r.grade === "💀";
-  const text = liq
-    ? `💀 코인선물 적성검사에서 강제청산당했다... 증거금 전액이 사라짐. 너는 살아남을 수 있냐? ⚔️`
-    : `🚀 코인선물 적성검사 ${r.grade}등급! ${pct(r.myRet)} 달성 (현물 존버 ${pct(r.bhRet)}). 너도 한번 해봐 ⚔️`;
+  const text = liq ? t("shareTextLiq") : t("shareText")(r.grade, pct(r.myRet), pct(r.bhRet));
   try {
     if (navigator.share) {
       const shareData = { text, url };
       if (CARD_BLOB && navigator.canShare) {
-        const file = new File([CARD_BLOB], "코인선물적성검사.png", { type: "image/png" });
+        const file = new File([CARD_BLOB], t("cardFilename"), { type: "image/png" });
         if (navigator.canShare({ files: [file] })) shareData.files = [file];
       }
       await navigator.share(shareData);
@@ -1138,9 +1377,9 @@ async function shareNative() {
   // 데스크탑 폴백: 텍스트+링크 클립보드 복사
   try {
     await navigator.clipboard.writeText(text + "\n" + url);
-    cardModalMsg("텍스트와 링크를 복사했어요! 어디든 붙여넣기 해서 공유하세요 📋");
+    cardModalMsg(t("shareNativeFallback"));
   } catch {
-    cardModalMsg("공유 기능이 지원되지 않아요. '복사' 버튼을 이용해 주세요 🙏");
+    cardModalMsg(t("shareNativeFail"));
   }
   gaEvent("card_share", { platform: "clipboard_fallback", grade: r.grade });
 }
@@ -1151,9 +1390,9 @@ async function copyCard() {
     if (!navigator.clipboard || !window.ClipboardItem) throw new Error("unsupported");
     await navigator.clipboard.write([new ClipboardItem({ "image/png": CARD_BLOB })]);
     gaEvent("card_copy", { grade: G.result?.grade || "unknown" });
-    cardModalMsg("카드 이미지가 복사됐어요! 붙여넣기 하세요 📋");
+    cardModalMsg(t("cardCopied"));
   } catch {
-    cardModalMsg("이 브라우저는 이미지 복사가 안 돼요. '이미지 저장'을 이용해 주세요 🙏");
+    cardModalMsg(t("cardCopyFail"));
   }
 }
 

@@ -298,27 +298,18 @@ footer p { margin-top: 4px; }
 }
 .card-modal-title { font-size: 14px; color: var(--accent); font-weight: 700; margin-bottom: 10px; }
 #card-preview { width: 100%; border-radius: 12px; display: block; }
-.card-modal-actions { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; margin-top: 14px; }
+.card-modal-actions { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 14px; }
 .share-btn {
   display: flex; flex-direction: column; align-items: center; justify-content: center;
-  padding: 10px 4px 9px; border: 1px solid #2a3158; border-radius: 12px;
-  font-family: inherit; cursor: pointer; gap: 5px;
+  padding: 14px 4px 12px; border: 1px solid #2a3158; border-radius: 14px;
+  font-family: inherit; cursor: pointer; gap: 7px;
   background: var(--panel2); color: var(--text);
 }
 .share-btn:active { transform: scale(.93); }
 .share-btn .share-icon {
-  height: 24px; display: flex; align-items: center; justify-content: center;
-  font-size: 20px; line-height: 1;
+  height: 26px; display: flex; align-items: center; justify-content: center;
 }
-.share-btn .share-label { font-size: 10px; font-weight: 700; color: var(--sub); }
-#btn-card-save { background: var(--accent); color: #221700; border-color: transparent; }
-#btn-card-save .share-label { color: #221700; opacity: .7; }
-#btn-share-x { background: #000; color: #fff; border-color: #333; }
-#btn-share-x .share-label { color: #999; }
-#btn-share-fb { background: #1877f2; color: #fff; border-color: transparent; }
-#btn-share-fb .share-label { color: rgba(255,255,255,.8); }
-#btn-share-threads { background: #101010; color: #fff; border-color: #333; }
-#btn-share-threads .share-label { color: #999; }
+.share-btn .share-label { font-size: 12px; font-weight: 700; color: var(--sub); }
 .card-modal-msg { font-size: 13px; color: var(--accent); min-height: 18px; margin-top: 10px; }
 .card-modal-close {
   margin-top: 6px; background: none; border: none; color: var(--sub);

@@ -24,7 +24,7 @@
 </script>
 <link rel="preconnect" href="https://cdn.jsdelivr.net">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
-<link rel="stylesheet" href="style.css?v=3">
+<link rel="stylesheet" href="style.css?v=4">
 </head>
 <body>
 <div class="wrap">
@@ -142,21 +142,16 @@
     <img id="card-preview" alt="차트만 보고 롱·숏 치는 - 코인선물 적성검사 결과 카드">
     <div class="card-modal-actions">
       <button id="btn-card-save" class="share-btn">
-        <span class="share-icon">💾</span><span class="share-label">저장</span>
+        <span class="share-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="22" height="22" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg></span>
+        <span class="share-label">저장</span>
       </button>
       <button id="btn-card-copy" class="share-btn">
-        <span class="share-icon">📋</span><span class="share-label">복사</span>
+        <span class="share-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="22" height="22" aria-hidden="true"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg></span>
+        <span class="share-label">복사</span>
       </button>
-      <button id="btn-share-x" class="share-btn">
-        <span class="share-icon"><svg viewBox="0 0 24 24" fill="currentColor" width="19" height="19" aria-hidden="true"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.742l7.73-8.835L1.254 2.25H8.08l4.261 5.636 5.903-5.636zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg></span>
-        <span class="share-label">X</span>
-      </button>
-      <button id="btn-share-fb" class="share-btn">
-        <span class="share-icon"><svg viewBox="0 0 24 24" fill="currentColor" width="19" height="19" aria-hidden="true"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg></span>
-        <span class="share-label">Facebook</span>
-      </button>
-      <button id="btn-share-threads" class="share-btn">
-        <span class="share-icon">🧵</span><span class="share-label">Threads</span>
+      <button id="btn-share-native" class="share-btn">
+        <span class="share-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="22" height="22" aria-hidden="true"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></svg></span>
+        <span class="share-label">공유</span>
       </button>
     </div>
     <p class="card-modal-msg" id="card-modal-msg"></p>
@@ -175,6 +170,6 @@
   </div>
 </div>
 
-<script src="app.js?v=9"></script>
+<script src="app.js?v=10"></script>
 </body>
 </html>

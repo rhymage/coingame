@@ -12,6 +12,40 @@ const LEVS = [1, 2, 5, 10, 20, 50];
 
 const TIER_EMOJI = { "메이저": "👑", "알트코인": "🌊", "밈코인": "🐶" };
 const TIER_EN   = { "메이저": "Major", "알트코인": "Altcoin", "밈코인": "Meme Coin" };
+const COIN_EN = {
+  ADAUSDT:"Cardano", AVAXUSDT:"Avalanche", BNBUSDT:"BNB", BTCUSDT:"Bitcoin",
+  DOGEUSDT:"Dogecoin", DOTUSDT:"Polkadot", ETHUSDT:"Ethereum", LINKUSDT:"Chainlink",
+  PEPEUSDT:"Pepe", SHIBUSDT:"Shiba Inu", SOLUSDT:"Solana", WIFUSDT:"dogwifhat", XRPUSDT:"XRP",
+};
+const ERA_EN = {
+  "2020 코로나 대폭락":"2020 COVID Crash",
+  "2021 1월 불장":"January 2021 Bull Run",
+  "2021 5·19 대폭락":"May 19, 2021 Crash",
+  "2021 SNL 전후":"Around SNL 2021",
+  "2021 가을 랠리":"Fall 2021 Rally",
+  "2021 막판 불꽃":"Late 2021 Final Surge",
+  "2021 머스크 펌핑":"2021 Musk Pump",
+  "2021 봄 펌핑":"Spring 2021 Pump",
+  "2021 사상 최고가 부근":"Near the 2021 All-Time High",
+  "2021 솔라나 썸머":"Solana Summer 2021",
+  "2021 스마트컨트랙트 펌핑":"2021 Smart-Contract Pump",
+  "2021 시바 광풍":"2021 Shiba Mania",
+  "2021 여름 랠리":"Summer 2021 Rally",
+  "2021 9·7 급락":"September 7, 2021 Crash",
+  "2022 FTX 붕괴":"2022 FTX Collapse",
+  "2022 FTX 붕괴 직격":"Hit by the 2022 FTX Collapse",
+  "2022 머지 전후":"Around the 2022 Merge",
+  "2022 셀시우스 사태":"2022 Celsius Crisis",
+  "2023 밈코인 광풍":"2023 Meme-Coin Mania",
+  "2023 부활 랠리":"2023 Revival Rally",
+  "2024 8·5 글로벌 급락":"August 5, 2024 Global Selloff",
+  "2024 ETF 승인 전후":"Around the 2024 ETF Approval",
+  "2024 대선 후 폭등":"Post-Election 2024 Surge",
+  "2024 미 대선 펌핑":"2024 U.S. Election Pump",
+  "2024 밈 시즌":"2024 Meme Season",
+  "2024 신고가 랠리":"2024 All-Time-High Rally",
+  "2026 최근 구간":"Recent 2026 Period",
+};
 
 // ── 다국어 (KO / EN) ──
 const STRINGS = {
@@ -39,6 +73,7 @@ const STRINGS = {
     otherGame:"주식단타 적성검사 해보기",
     cardModalTitle:"📸 결과 카드", shareSave:"저장", shareCopy:"복사", shareNativeBtn:"공유", closeBtn:"닫기 ✕",
     footerDisclaimer:"본 게임은 재미를 위한 것으로 투자 권유가 아니며, 게임 성적은 실제 투자 실력을 보장하지 않습니다.",
+    footerPrivacy:"개인정보처리방침", footerAbout:"서비스 소개",
     previewPhase:"직전 20시간",
     btnPlayLoading:"⏳ 차트 그리는 중", btnPlayStart:"▶ 선물 매매 시작",
     btnPlayPause:"⏸ 일시정지", btnPlayResume:"▶ 재개", btnStep:"⏭ +1봉",
@@ -152,6 +187,7 @@ const STRINGS = {
     otherGame:"Try the Stock Day-Trading Test",
     cardModalTitle:"📸 Result Card", shareSave:"Save", shareCopy:"Copy", shareNativeBtn:"Share", closeBtn:"Close ✕",
     footerDisclaimer:"For entertainment only — not investment advice. Game results do not guarantee actual trading performance.",
+    footerPrivacy:"Privacy Policy", footerAbout:"About",
     previewPhase:"Past 20 Hours",
     btnPlayLoading:"⏳ Drawing chart…", btnPlayStart:"▶ Start Futures Trading",
     btnPlayPause:"⏸ Pause", btnPlayResume:"▶ Resume", btnStep:"⏭ +1 Candle",
@@ -248,6 +284,8 @@ let LOCALE = (() => {
   return navigator.language.startsWith("ko") ? "ko" : "en";
 })();
 const t = (key) => STRINGS[LOCALE][key];
+const coinName = (coin) => LOCALE === "en" ? (COIN_EN[coin.t] || coin.t.replace("USDT", "")) : coin.name;
+const eraName = (coin) => LOCALE === "en" ? (ERA_EN[coin.era] || coin.era) : coin.era;
 
 let MANIFEST = null;
 
@@ -290,7 +328,7 @@ function barTime(d) {
   return new Date(G.chart.t0 + bar(d) * G.chart.step);
 }
 function fmtKST(date, withYear = true) {
-  const p = new Intl.DateTimeFormat("ko-KR", {
+  const p = new Intl.DateTimeFormat(LOCALE === "en" ? "en-CA" : "ko-KR", {
     timeZone: "Asia/Seoul", year: "numeric", month: "2-digit", day: "2-digit",
     hour: "2-digit", minute: "2-digit", hour12: false,
   }).formatToParts(date).reduce((a, x) => ((a[x.type] = x.value), a), {});
@@ -1079,8 +1117,8 @@ function renderResult() {
   $("#challenge-copy").classList.add("hidden");
   $("#btn-challenge").innerHTML = t("btnChallenge");
 
-  $("#r-name").textContent = `${TIER_EMOJI[s.tier] || "🪙"} ${s.name} (${s.t.replace("USDT", "")}/USDT)`;
-  $("#r-period").textContent = `${s.era} · ${fmtKST(barTime(0))} ~ ${fmtKST(barTime(N - 1), false)} (KST)`;
+  $("#r-name").textContent = `${TIER_EMOJI[s.tier] || "🪙"} ${coinName(s)} (${s.t.replace("USDT", "")}/USDT)`;
+  $("#r-period").textContent = `${eraName(s)} · ${fmtKST(barTime(0))} ~ ${fmtKST(barTime(N - 1), false)} (KST)`;
   $("#r-grade").textContent = r.grade;
   document.querySelector(".grade-box").classList.toggle("liq", r.grade === "💀");
   $("#r-comment").innerHTML = gradeComment(r) + '<br><span class="r-behavior">' + behaviorTag() + "</span>";
@@ -1219,7 +1257,7 @@ function renderDash() {
       <span>${t("dashBest")} <b>${best}</b></span>
     </div>
     ${h.slice(0, 5).map((x) =>
-      `<div class="hist"><span>${x.grade === "💀" ? t("dashLiqLabel") : t("dashGradeEntry")(x.grade)} · ${x.name}</span><span>${t("dashRowSuffix")(x.liq ? "-100%" : pct(x.ret), x.liq ? "❓" : pct(x.bh))}</span></div>`
+      `<div class="hist"><span>${x.grade === "💀" ? t("dashLiqLabel") : t("dashGradeEntry")(x.grade)} · ${coinName(x)}</span><span>${t("dashRowSuffix")(x.liq ? "-100%" : pct(x.ret), x.liq ? "❓" : pct(x.bh))}</span></div>`
     ).join("")}`;
 }
 
@@ -1301,9 +1339,9 @@ async function saveCard() {
 
   // 코인 공개
   ctx.fillStyle = "#eef1ff"; ctx.font = "700 46px Pretendard, sans-serif";
-  ctx.fillText(`${s.name} (${s.t.replace("USDT", "")}) ${t("cardPeriodLabel")}`, W / 2, 452);
+  ctx.fillText(`${coinName(s)} (${s.t.replace("USDT", "")}) ${t("cardPeriodLabel")}`, W / 2, 452);
   ctx.fillStyle = "#8b93b8"; ctx.font = "400 32px Pretendard, sans-serif";
-  ctx.fillText(`${s.era} · ${fmtKST(barTime(0))} ~ ${fmtKST(barTime(N - 1), false)} (KST)`, W / 2, 506);
+  ctx.fillText(`${eraName(s)} · ${fmtKST(barTime(0))} ~ ${fmtKST(barTime(N - 1), false)} (KST)`, W / 2, 506);
 
   ctx.font = "700 50px Pretendard, sans-serif";
   if (liq) {

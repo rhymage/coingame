@@ -295,6 +295,7 @@ h1 { font-size: 30px; letter-spacing: -0.5px; line-height: 1.18; }
 
 footer { margin-top: 26px; color: #4a5278; font-size: 11px; text-align: center; }
 footer p { margin-top: 4px; }
+.operator-info { color: #8b93b8; font-weight: 700; }
 
 /* ── 결과 카드 팝업 ── */
 .card-modal {

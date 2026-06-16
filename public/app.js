@@ -611,6 +611,7 @@ function setLocale(lang) {
   LOCALE = lang;
   try { localStorage.setItem("lang", lang); } catch {}
   applyLocale();
+  renderDash();
   // 게임 중이면 동적 UI도 갱신
   if (G.phase === "playing" || G.phase === "preview") {
     updateHud();

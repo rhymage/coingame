@@ -282,6 +282,17 @@ h1 { font-size: 30px; letter-spacing: -0.5px; line-height: 1.18; }
 }
 .other-game-btn:active { transform: scale(.97); }
 
+.adfit-banner {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 50px;
+  margin: 18px auto 0;
+}
+.adfit-banner .kakao_ad_area {
+  max-width: 100%;
+}
+
 footer { margin-top: 26px; color: #4a5278; font-size: 11px; text-align: center; }
 footer p { margin-top: 4px; }
 
